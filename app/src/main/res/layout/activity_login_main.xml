@@ -9,7 +9,7 @@
     tools:context=".SignMainActivity">
 
     <FrameLayout
-        android:id="@+id/layoutContainer"
+        android:id="@+id/fragmentLayoutContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
