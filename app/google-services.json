@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "395846488044",
+    "firebase_url": "https://parking-16915.firebaseio.com",
+    "project_id": "parking-16915",
+    "storage_bucket": "parking-16915.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:395846488044:android:909a9eed6661e725",
+        "android_client_info": {
+          "package_name": "hazi.vmarci94.mobweb.aut.bme.hu.parking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "395846488044-113nvu14g9u1ute3moad8vt4h2f5p6pn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "hazi.vmarci94.mobweb.aut.bme.hu.parking",
+            "certificate_hash": "2054058493ce99c4f4cd18b7944a7e2d9a59e0a1"
+          }
+        },
+        {
+          "client_id": "395846488044-qqd9karlk8u8f3b1qehhp0jo52eukrki.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmd1ALKVbEVWJMwveLcxaC6K3OIjnUuG8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "395846488044-qqd9karlk8u8f3b1qehhp0jo52eukrki.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
