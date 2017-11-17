@@ -1,6 +1,7 @@
 package hazi.vmarci94.mobweb.aut.bme.hu.parking.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseUser;
 
+import hazi.vmarci94.mobweb.aut.bme.hu.parking.MapsMainActivity;
 import hazi.vmarci94.mobweb.aut.bme.hu.parking.R;
 import hazi.vmarci94.mobweb.aut.bme.hu.parking.interfaces.ConnectionHandlerToMyFragment;
 import hazi.vmarci94.mobweb.aut.bme.hu.parking.interfaces.ConnectionHandlerToMyFragmentActivity;
@@ -80,6 +82,13 @@ public class SigninFragment extends Fragment implements ConnectionHandlerToMyFra
 
     @Override
     public void updateUI(FirebaseUser firebaseUser) {
-        Log.i(TAG, "SIKERES BEJELENTKEZÉS");
+        if(firebaseUser != null && !firebaseUser.isAnonymous()) {
+            Log.i("TAG " + TAG, "SIKERES BEJELENTKEZÉS");
+            startActivity(new Intent(getActivity(), MapsMainActivity.class));
+            getActivity().finish();
+        }
     }
+
+
+
 }

@@ -144,9 +144,8 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-        if (getFragmentManager().getBackStackEntryCount() > 1) { // ActionBarActivity-nél kell
-            getFragmentManager().popBackStackImmediate();
-            getFragmentManager().beginTransaction().commit();
+        if(getSupportFragmentManager().getBackStackEntryCount() > 1){
+            getSupportFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
         }
@@ -199,7 +198,7 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(SignMainActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            mConnectionHandlerToSignupFragment.updateUI(null); //FIXME crash
+                            mConnectionHandlerToSigninFragment.updateUI(null); //FIXME crash
                         }
 
                         // [START_EXCLUDE]

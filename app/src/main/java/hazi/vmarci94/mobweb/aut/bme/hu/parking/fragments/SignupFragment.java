@@ -51,6 +51,7 @@ public class SignupFragment extends Fragment implements ConnectionHandlerToMyFra
             @Override
             public void onClick(View view) {
                 connectionHandlerToMyFragmentActivity.singUpMe(email.getText().toString(), password.getText().toString());
+
             }
         });
 
