@@ -50,7 +50,7 @@ public class SignupFragment extends Fragment implements ConnectionHandlerToMyFra
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                connectionHandlerToMyFragmentActivity.singUpMe(email.getText().toString(), password.getText().toString());
+                connectionHandlerToMyFragmentActivity.signUpMe(email.getText().toString(), password.getText().toString());
 
             }
         });

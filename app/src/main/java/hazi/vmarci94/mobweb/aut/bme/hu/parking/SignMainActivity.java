@@ -87,7 +87,6 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
         return valid;
     }
 
-
     private void createAccount(String email, String password) {
         Log.d(TAG, "createAccount:" + email);
         if (!validateForm(email, password)) {
@@ -118,7 +117,6 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
         // [END create_user_with_email]
     }
 
-
     public void showFragment(String tag) {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -143,7 +141,6 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
         if(getSupportFragmentManager().getBackStackEntryCount() > 1){
             getSupportFragmentManager().popBackStack();
         } else {
@@ -152,18 +149,23 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
     }
 
     @Override
-    public void singUpWithSignUpFragment(String name) {
+    public void signUpWithSignUpFragment(String name) {
         showFragment(name);
     }
 
     @Override
-    public void singInMe(String email, String passwd) {
+    public void signInMe(String email, String passwd) {
         signIn(email, passwd);
     }
 
     @Override
-    public void singUpMe(String email, String passwd) {
+    public void signUpMe(String email, String passwd) {
         createAccount(email, passwd);
+    }
+
+    @Override
+    public void signOutMe() {
+        signOut();
     }
 
     @Override
@@ -173,8 +175,9 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
         mConnectionHandlerToSigninFragment.updateUI(currentUser);
     }
 
-    private void signOut() {
+    public void signOut() {
         mAuth.signOut();
+        Log.i("MTAG", "kijelentkezteteve");
     }
 
     private void signIn(String email, String password) {
@@ -198,7 +201,7 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(SignMainActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            mConnectionHandlerToSigninFragment.updateUI(null); //FIXME crash
+                            mConnectionHandlerToSigninFragment.updateUI(null);
                         }
 
                         // [START_EXCLUDE]

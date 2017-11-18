@@ -2,30 +2,32 @@ package hazi.vmarci94.mobweb.aut.bme.hu.parking;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Polygon;
-import com.google.android.gms.maps.model.Polyline;
+import com.google.maps.android.data.Feature;
 import com.google.maps.android.data.kml.KmlLayer;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
+import hazi.vmarci94.mobweb.aut.bme.hu.parking.fragments.SigninFragment;
+
 /**
  * Created by vmarci94 on 2017. 11. 16..
  */
 
 public class MapsMainActivity extends AppCompatActivity implements
-        OnMapReadyCallback,
-        GoogleMap.OnPolylineClickListener,
-        GoogleMap.OnPolygonClickListener {
+        OnMapReadyCallback{
 
     private GoogleMap mMap;
+    private KmlLayer kmlLayer;
     private final LatLng Budapest = new LatLng(47.49801, 19.03991);
     private final LatLng Zuglo = new LatLng(47.508322, 19.094957);
 
@@ -38,29 +40,46 @@ public class MapsMainActivity extends AppCompatActivity implements
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-    }
-
-    @Override
-    public void onPolygonClick(Polygon polygon) {
-
-    }
-
-    @Override
-    public void onPolylineClick(Polyline polyline) {
 
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(Zuglo));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Zuglo, 13));
-        retrieveFileFromResource();
+        try {
+            mMap = googleMap;
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Zuglo, 13));
+            retrieveFileFromResource();
+            setOnClickListenerAllPlacemark();
+        } catch (Exception e) {
+            Log.e("Exception caught", e.toString());
+        }
+    }
+
+    private void setOnClickListenerAllPlacemark(){
+        kmlLayer.setOnFeatureClickListener(new KmlLayer.OnFeatureClickListener() {
+            @Override
+            public void onFeatureClick(Feature feature) {
+                if(feature != null) {
+                    Toast.makeText(MapsMainActivity.this,
+                            "Feature clicked: " + feature.getProperty("name"),
+                            Toast.LENGTH_SHORT).show();
+                }else{
+                    Log.e("MTAG", "feature is null :("); //FIXME
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(SigninFragment.SIGNOUT_RESAULT);
+        finish();
+        super.onBackPressed();
     }
 
     private void retrieveFileFromResource() {
         try {
-            KmlLayer kmlLayer = new KmlLayer(mMap, R.raw.nmfr_zonak_1110, getApplicationContext
+            kmlLayer = new KmlLayer(mMap, R.raw.zona, getApplicationContext
                     ());
             kmlLayer.addLayerToMap();
         } catch (IOException e) {
@@ -69,4 +88,6 @@ public class MapsMainActivity extends AppCompatActivity implements
             e.printStackTrace();
         }
     }
+
+
 }

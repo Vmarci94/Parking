@@ -8,10 +8,12 @@ public interface ConnectionHandlerToMyFragmentActivity {
     /**
      * @param name = SignupFragment
      */
-    void singUpWithSignUpFragment(String name);
+    void signUpWithSignUpFragment(String name);
 
-    void singInMe(String email, String passwd);
+    void signInMe(String email, String passwd);
 
-    void singUpMe(String email, String passwd);
+    void signUpMe(String email, String passwd);
+
+    void signOutMe();
 }
 

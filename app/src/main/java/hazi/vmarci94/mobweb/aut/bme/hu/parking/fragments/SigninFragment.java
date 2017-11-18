@@ -27,6 +27,10 @@ import hazi.vmarci94.mobweb.aut.bme.hu.parking.interfaces.ConnectionHandlerToMyF
 public class SigninFragment extends Fragment implements ConnectionHandlerToMyFragment{
     public static final String TAG = "SigninFragment";
 
+    public static final int ENTER_REQUEST = 500;
+    public static final int SIGNOUT_RESAULT = 501;
+
+
     //FIXME be kell még őket kötni
     private EditText emailText;
     private EditText passwordText;
@@ -55,14 +59,14 @@ public class SigninFragment extends Fragment implements ConnectionHandlerToMyFra
         signupLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                connectionHandlerToMyFragmentActivity.singUpWithSignUpFragment(SignupFragment.TAG);
+                connectionHandlerToMyFragmentActivity.signUpWithSignUpFragment(SignupFragment.TAG);
             }
         });
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                connectionHandlerToMyFragmentActivity.singInMe(emailText.getText().toString(), passwordText.getText().toString());
+                connectionHandlerToMyFragmentActivity.signInMe(emailText.getText().toString(), passwordText.getText().toString());
             }
         });
 
@@ -84,11 +88,21 @@ public class SigninFragment extends Fragment implements ConnectionHandlerToMyFra
     public void updateUI(FirebaseUser firebaseUser) {
         if(firebaseUser != null && !firebaseUser.isAnonymous()) {
             Log.i("TAG " + TAG, "SIKERES BEJELENTKEZÉS");
-            startActivity(new Intent(getActivity(), MapsMainActivity.class));
-            getActivity().finish();
+            startActivityForResult(new Intent(getActivity(), MapsMainActivity.class), ENTER_REQUEST);
         }
     }
 
-
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == ENTER_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == SIGNOUT_RESAULT) {
+                // The user picked a contact.
+                // The Intent's data Uri identifies which contact was selected.
+                connectionHandlerToMyFragmentActivity.signOutMe();
+                // Do something with the contact here (bigger example below)
+            }
+        }
+    }
 }
