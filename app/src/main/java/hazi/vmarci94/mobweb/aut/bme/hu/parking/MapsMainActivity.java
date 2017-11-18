@@ -1,7 +1,7 @@
 package hazi.vmarci94.mobweb.aut.bme.hu.parking;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -11,7 +11,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.data.Feature;
+import com.google.maps.android.data.MultiGeometry;
+import com.google.maps.android.data.kml.KmlContainer;
 import com.google.maps.android.data.kml.KmlLayer;
+import com.google.maps.android.data.kml.KmlPlacemark;
+import com.google.maps.android.data.kml.KmlPolygon;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -23,8 +27,9 @@ import hazi.vmarci94.mobweb.aut.bme.hu.parking.fragments.SigninFragment;
  * Created by vmarci94 on 2017. 11. 16..
  */
 
-public class MapsMainActivity extends AppCompatActivity implements
-        OnMapReadyCallback{
+public class MapsMainActivity extends FragmentActivity
+        implements OnMapReadyCallback,
+        GoogleMap.OnMyLocationButtonClickListener {
 
     private GoogleMap mMap;
     private KmlLayer kmlLayer;
@@ -50,8 +55,26 @@ public class MapsMainActivity extends AppCompatActivity implements
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Zuglo, 13));
             retrieveFileFromResource();
             setOnClickListenerAllPlacemark();
+            listAllPlacemarksStyleID();
         } catch (Exception e) {
             Log.e("Exception caught", e.toString());
+        }
+    }
+
+    private void listAllPlacemarksStyleID(){
+        for(KmlContainer container : kmlLayer.getContainers()){
+            for(KmlPlacemark placemark : container.getPlacemarks()){
+                Log.i("MTAG", placemark.getProperty("name") +   " is a " + placemark.getGeometry().getGeometryType());
+
+                if(placemark.getGeometry().getGeometryType().equals(MultiGeometry.class.getSimpleName())){
+                    //if placmark is a MultiGeometry
+                    MultiGeometry multiGeometry = (MultiGeometry) placemark.getGeometry();
+                    //...
+                } else if(placemark.getGeometry().getGeometryType().equals(KmlPolygon.class.getSimpleName())){ // I use just MultiGeometry and KmlPolygon type, just in case ... :)
+                    KmlPolygon kmlPolygon = (KmlPolygon) placemark.getGeometry();
+                    // ...
+                }
+            }
         }
     }
 
@@ -90,4 +113,8 @@ public class MapsMainActivity extends AppCompatActivity implements
     }
 
 
+    @Override
+    public boolean onMyLocationButtonClick() {
+        return false;
+    }
 }
