@@ -126,7 +126,10 @@
     <Placemark>
       <name>5. díjtarifa övezet</name>
       <description>Tarifa személygépkocsira: 175 Ft / óra Üzemidő: munkanapokon 8:00 - 18:00 Időtartam korlátozás: nincs</description>
-      <styleUrl>#poly-0288D1-1-77</styleUrl>
+	  <price>175</price>
+	  <startTime>8:00</startTime>
+      <endTime>18:00</endTime><phone>063012345667</phone>
+	  <styleUrl>#poly-0288D1-1-77</styleUrl>
       <Polygon>
         <outerBoundaryIs>
           <LinearRing>
@@ -169,7 +172,10 @@
     <Placemark>
       <name>4. díjtarifa övezet</name>
       <description>Tarifa személygépkocsira: - 265 Ft / óra  Üzemidő: munkanapokon 8:00 - 18:00 Időtartam korlátozás: nincs</description>
-      <styleUrl>#poly-558B2F-701-148</styleUrl>
+      <price>265</price>
+	  <startTime>8:00</startTime>
+      <endTime>18:00</endTime><phone>063012345667</phone>
+	  <styleUrl>#poly-558B2F-701-148</styleUrl>
       <MultiGeometry>
         <Polygon>
           <outerBoundaryIs>
@@ -694,7 +700,10 @@
     <Placemark>
       <name>2.  díjtarifa övezet</name>
       <description>Tarifa személygépkocsira: 440 Ft / óra Üzemidő: munkanapokon 8:00-18:00 Időtartam korlátozás: nincs</description>
-      <styleUrl>#poly-FF5252-1-163</styleUrl>
+      <price>440</price>
+      <startTime>8:00</startTime>
+      <endTime>18:00</endTime><phone>063012345667</phone>
+	  <styleUrl>#poly-FF5252-1-163</styleUrl>
       <MultiGeometry>
         <Polygon>
           <outerBoundaryIs>
@@ -862,7 +871,10 @@
     <Placemark>
       <name>1. díjtarifa övezet</name>
       <description>Tarifa személygépkocsira: 525 Ft / óra Üzemidő: munkanapokon 8:00-18:00 Időtartam korlátozás: nincs</description>
-      <styleUrl>#poly-CE93D8-901-133</styleUrl>
+      <price>525</price>
+	  <startTime>8:00</startTime>
+      <endTime>18:00</endTime><phone>063012345667</phone>
+	  <styleUrl>#poly-CE93D8-901-133</styleUrl>
       <Polygon>
         <outerBoundaryIs>
           <LinearRing>
@@ -936,7 +948,10 @@
     <Placemark>
       <name>Védett övezet</name>
       <description>Tarifa személygépkocsira: 350 Ft / óra Üzemidő: munkanapokon 8:00-18:00 Időtartam korlátozás: nincs</description>
-      <styleUrl>#poly-FFFF8D-1-143</styleUrl>
+      <price>350</price>
+	  <startTime>8:00</startTime>
+      <endTime>18:00</endTime><phone>063012345667</phone>
+	  <styleUrl>#poly-FFFF8D-1-143</styleUrl>
       <MultiGeometry>
         <Polygon>
           <outerBoundaryIs>
@@ -1137,7 +1152,10 @@
     <Placemark>
       <name>Védett övezet</name>
       <description>Tarifa: 350 Ft / óra Üzemidő: munkanapokon 8:00-18:00 Időtartam korlátozás: nincs</description>
-      <styleUrl>#poly-FFFF8D-1200-145</styleUrl>
+      <price>350</price>
+	  <startTime>8:00</startTime>
+      <endTime>18:00</endTime><phone>063012345667</phone>
+	  <styleUrl>#poly-FFFF8D-1200-145</styleUrl>
       <Polygon>
         <outerBoundaryIs>
           <LinearRing>
@@ -1159,7 +1177,10 @@
     <Placemark>
       <name>4. díjtarifa övezet</name>
       <description>Tarifa személygépkocsira: 265 Ft / óra Üzemidő: munkanapokon 8:00 - 18:00 Időtartam korlátozás: nincs Ezen a területen a kiváltott lakossági várakozási hozzájárulás nem érvényesíthető.</description>
-      <styleUrl>#poly-87CEAC-1901-105</styleUrl>
+	  <price>265</price>
+      <startTime>8:00</startTime>
+      <endTime>18:00</endTime><phone>063012345667</phone>
+	  <styleUrl>#poly-87CEAC-1901-105</styleUrl>
       <MultiGeometry>
         <Polygon>
           <outerBoundaryIs>
@@ -1457,7 +1478,10 @@
     <Placemark>
       <name>3. díjtarifa övezet</name>
       <description>Tarifa személygépkocsira: 350 Ft / óra Üzemidő: munkanapokon 8:00-18:00 Időtartam korlátozás: nincs 3 órára történő díjfizetés esetén a díjfizetés napján a várakozási üzemidő végéig további díjfizetés nélkül lehet várakozni Ezen a területen a kiváltott lakossági várakozási hozzájárulás nem érvényesíthető.</description>
-      <styleUrl>#poly-F57C00-1-212</styleUrl>
+      <price>350</price>
+	  <startTime>8:00</startTime>
+      <endTime>18:00</endTime><phone>063012345667</phone>
+	  <styleUrl>#poly-F57C00-1-212</styleUrl>
       <Polygon>
         <outerBoundaryIs>
           <LinearRing>
@@ -1506,7 +1530,10 @@
     <Placemark>
       <name>2. díjtarifa övezet</name>
       <description>Tarifa személygépkocsira: 440 Ft / óra Üzemidő: munkanapokon 8:00-18:00 Időtartam korlátozás: nincs</description>
-      <styleUrl>#poly-A52714-601-117</styleUrl>
+      <price>440</price>
+	  <startTime>8:00</startTime>
+      <endTime>18:00</endTime><phone>063012345667</phone>
+	  <styleUrl>#poly-A52714-601-117</styleUrl>
       <MultiGeometry>
         <Polygon>
           <outerBoundaryIs>
@@ -1636,7 +1663,10 @@
     <Placemark>
       <name>1. díjtarifa övezet</name>
       <description>Tarifa személygépkocsira: 525 Ft / óra Üzemidő: munkanapokon 8:00-18:00 Időtartam korlátozás: nincs</description>
-      <styleUrl>#poly-1A237E-1-158</styleUrl>
+      <price>525</price>
+	  <startTime>8:00</startTime>
+      <endTime>18:00</endTime><phone>063012345667</phone>
+	  <styleUrl>#poly-1A237E-1-158</styleUrl>
       <MultiGeometry>
         <Polygon>
           <outerBoundaryIs>
@@ -1712,7 +1742,10 @@
     <Placemark>
       <name>2. díjtarifa övezet</name>
       <description>Tarifa személygépkocsira: 440 Ft / óra Üzemidő: munkanapokon 8:00-18:00 Időtartam korlátozás: nincs Ezen a területen a kiváltott lakossági várakozási hozzájárulás nem érvényesíthető</description>
-      <styleUrl>#poly-A52714-801-77</styleUrl>
+	  <price>440</price>
+      <startTime>8:00</startTime>
+      <endTime>18:00</endTime><phone>063012345667</phone>
+	  <styleUrl>#poly-A52714-801-77</styleUrl>
       <Polygon>
         <outerBoundaryIs>
           <LinearRing>

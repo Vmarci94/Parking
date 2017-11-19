@@ -4,5 +4,9 @@
     <string name="signup_text">Nincs még fiókod? Csináj egyet!</string>
     <string name="passwd">Jelszó</string>
     <string name="email">Email</string>
+    <string name="dialogTitle">Engedélykérés</string>
+    <string name="explanation">további működéshez a készüléknek hozzá kell férnie a hardveres erőforrásokhoz.</string>
+    <string name="exit">Kilépés</string>
+    <string name="forward">Rendben</string>
 
 </resources>

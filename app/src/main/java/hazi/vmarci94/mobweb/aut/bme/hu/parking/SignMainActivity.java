@@ -48,6 +48,7 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
         // Send verification email
         // [START send_email_verification]
         final FirebaseUser user = mAuth.getCurrentUser();
+        assert user != null;
         user.sendEmailVerification()
                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
@@ -67,6 +68,7 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
                         // [END_EXCLUDE]
                     }
                 });
+
         // [END send_email_verification]
     }
 

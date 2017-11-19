@@ -1,11 +1,20 @@
 package hazi.vmarci94.mobweb.aut.bme.hu.parking;
 
+import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,6 +36,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import hazi.vmarci94.mobweb.aut.bme.hu.parking.data.Zona;
 import hazi.vmarci94.mobweb.aut.bme.hu.parking.fragments.SigninFragment;
 
 /**
@@ -34,13 +44,17 @@ import hazi.vmarci94.mobweb.aut.bme.hu.parking.fragments.SigninFragment;
  */
 
 public class MapsMainActivity extends FragmentActivity
-        implements OnMapReadyCallback {
+        implements OnMapReadyCallback{
+
+    private static final int MY_PERMISSIONS_REQUEST_LOCATION = 100;
+    private final LatLng Budapest = new LatLng(47.49801, 19.03991);
+    private final LatLng Zuglo = new LatLng(47.508322, 19.094957);
 
     private GoogleMap mMap;
     private KmlLayer kmlLayer;
     private ArrayList<KmlPolygon> kmlPolygons = new ArrayList<>();
-    private final LatLng Budapest = new LatLng(47.49801, 19.03991);
-    private final LatLng Zuglo = new LatLng(47.508322, 19.094957);
+    private ArrayList<Zona> zonak = new ArrayList<>();
+
 
 
     @Override
@@ -48,52 +62,116 @@ public class MapsMainActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_main);
 
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
         //Szolgáltatáshoz engedélykérés
-
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        handlerPermission();
 
     }
 
+    private void handlerPermission(){
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION) || ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)){
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                alertDialogBuilder.setTitle(R.string.dialogTitle);
+                alertDialogBuilder
+                        .setMessage(R.string.explanation)
+                        .setCancelable(false)
+                        .setNegativeButton(R.string.exit, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                MapsMainActivity.this.finish();
+                            }
+                        })
+                        .setPositiveButton(R.string.forward, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                ActivityCompat.requestPermissions(MapsMainActivity.this,
+                                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION},
+                                        MY_PERMISSIONS_REQUEST_LOCATION);
+                            }
+                        });
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+        } else {
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay!
+
+                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                            .findFragmentById(R.id.map);
+                    mapFragment.getMapAsync(this);
+
+                } else {
+                    // permission denied! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission") //handler call in onCreate
     @Override
     public void onMapReady(GoogleMap googleMap) {
         try {
             mMap = googleMap;
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Zuglo, 13));
             retrieveFileFromResource();
-            //setOnClickListenerAllPlacemark();
-            listAllPlacemarksStyleID();
+            createSimplePolygonsFromKmlLayout();
+            mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
             mMap.setOnPolygonClickListener(new GoogleMap.OnPolygonClickListener() {
                 @Override
                 public void onPolygonClick(Polygon polygon) {
-                    Log.i("MTAG_Polygon_id", polygon.getId());
+                    Toast.makeText(MapsMainActivity.this, "click id=" + polygon.getId() + " polygon", Toast.LENGTH_LONG).show();
                 }
             });
 
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
-            mMap.setMyLocationEnabled(true);
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            mMap.setOnMyLocationClickListener(new GoogleMap.OnMyLocationClickListener() {
+                @Override
+                public void onMyLocationClick(@NonNull Location location) {
+                    Toast.makeText(MapsMainActivity.this, "megnyomtál", Toast.LENGTH_LONG).show();
+                }
+            });
+
         } catch (Exception e) {
             Log.e("Exception caught", e.toString());
         }
     }
 
-    private void listAllPlacemarksStyleID(){
+
+    private void createSimplePolygonsFromKmlLayout(){
         for(KmlContainer container : kmlLayer.getContainers()){
             for(KmlPlacemark placemark : container.getPlacemarks()){
-                //Log.i("MTAG", placemark.getProperty("name") +   " is a " + placemark.getGeometry().getGeometryType());
                 if(placemark.getGeometry().getGeometryType().equals(MultiGeometry.class.getSimpleName())){
                     //if placmark is a MultiGeometry
                     MultiGeometry multiGeometry = (MultiGeometry) placemark.getGeometry();
@@ -106,19 +184,19 @@ public class MapsMainActivity extends FragmentActivity
                     KmlPolygon kmlPolygon = (KmlPolygon) placemark.getGeometry();
                     kmlPolygons.add(kmlPolygon);
                 }
-
-                PolygonOptions polygonOptions = new PolygonOptions();
                 for(KmlPolygon kmlPolygon : kmlPolygons){
-                    Log.i("MTAG_test", Integer.valueOf(kmlPolygon.getGeometryObject().size() ).toString());
+                    PolygonOptions polygonOptions = new PolygonOptions();
                     polygonOptions.addAll(kmlPolygon.getGeometryObject().get(0)); //btw just one elem ... why list<list>?!
                     Polygon polygon = mMap.addPolygon(polygonOptions.strokeColor(Color.RED));
                     polygon.setClickable(true);
                 }
             }
         }
+        Log.i("MTAG_ALLsize", Integer.valueOf(kmlPolygons.size()).toString());
+
     }
 
-    private void setOnClickListenerAllPlacemark(){
+    private void setOnFeatureClickListener(){
         kmlLayer.setOnFeatureClickListener(new KmlLayer.OnFeatureClickListener() {
             @Override
             public void onFeatureClick(Feature feature) {
@@ -143,7 +221,7 @@ public class MapsMainActivity extends FragmentActivity
 
     private void retrieveFileFromResource() {
         try {
-            kmlLayer = new KmlLayer(mMap, R.raw.zona5, getApplicationContext
+            kmlLayer = new KmlLayer(mMap, R.raw.zona, getApplicationContext
                     ());
             kmlLayer.addLayerToMap();
         } catch (IOException e) {
@@ -152,5 +230,6 @@ public class MapsMainActivity extends FragmentActivity
             e.printStackTrace();
         }
     }
+
 
 }
