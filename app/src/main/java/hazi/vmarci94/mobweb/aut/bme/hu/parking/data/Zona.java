@@ -1,8 +1,11 @@
 package hazi.vmarci94.mobweb.aut.bme.hu.parking.data;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polygon;
+import com.google.maps.android.data.kml.KmlPlacemark;
+import com.google.maps.android.data.kml.KmlPolygon;
 
-import java.util.Date;
+import java.util.List;
 
 /**
  * Created by vmarci94 on 2017. 11. 19..
@@ -10,22 +13,25 @@ import java.util.Date;
 
 public class Zona {
     private String name;
-    private Date start, end;
-    private int price;
-    private String description;
+    private String price;
     private String phone;
+    private KmlPolygon kmlPolygon;
     private Polygon polygon;
 
     public Zona() {
     }
 
-    public Zona(String name, Date start, Date end, int price, String description, String phone) {
-        this.name = name;
-        this.start = start;
-        this.end = end;
-        this.price = price;
-        this.description = description;
-        this.phone = phone;
+    public Zona(KmlPlacemark placemark){
+        name = placemark.getProperty("name");
+
+        String[] phoneNumAndPrice = placemark.getProperty("description").split("-");
+        phone = phoneNumAndPrice[0];
+        price = phoneNumAndPrice[1];
+        kmlPolygon = ((KmlPolygon) placemark.getGeometry());
+    }
+
+    public List<LatLng> getPolygonCoords(){
+        return kmlPolygon.getGeometryObject().get(0);
     }
 
     public String getName() {
@@ -36,36 +42,12 @@ public class Zona {
         this.name = name;
     }
 
-    public Date getStart() {
-        return start;
-    }
-
-    public void setStart(Date start) {
-        this.start = start;
-    }
-
-    public Date getEnd() {
-        return end;
-    }
-
-    public void setEnd(Date end) {
-        this.end = end;
-    }
-
-    public int getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(String price) {
         this.price = price;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getPhone() {
@@ -74,6 +56,14 @@ public class Zona {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public KmlPolygon getKmlPolygon() {
+        return kmlPolygon;
+    }
+
+    public void setKmlPolygon(KmlPolygon kmlPolygon) {
+        this.kmlPolygon = kmlPolygon;
     }
 
     public Polygon getPolygon() {

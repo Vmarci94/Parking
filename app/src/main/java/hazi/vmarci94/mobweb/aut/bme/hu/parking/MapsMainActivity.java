@@ -2,6 +2,7 @@ package hazi.vmarci94.mobweb.aut.bme.hu.parking;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -10,11 +11,18 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -24,12 +32,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.maps.android.PolyUtil;
 import com.google.maps.android.data.Feature;
-import com.google.maps.android.data.MultiGeometry;
 import com.google.maps.android.data.kml.KmlContainer;
 import com.google.maps.android.data.kml.KmlLayer;
 import com.google.maps.android.data.kml.KmlPlacemark;
-import com.google.maps.android.data.kml.KmlPolygon;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -43,8 +50,8 @@ import hazi.vmarci94.mobweb.aut.bme.hu.parking.fragments.SigninFragment;
  * Created by vmarci94 on 2017. 11. 16..
  */
 
-public class MapsMainActivity extends FragmentActivity
-        implements OnMapReadyCallback{
+public class MapsMainActivity extends AppCompatActivity
+        implements OnMapReadyCallback {
 
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 100;
     private final LatLng Budapest = new LatLng(47.49801, 19.03991);
@@ -52,29 +59,18 @@ public class MapsMainActivity extends FragmentActivity
 
     private GoogleMap mMap;
     private KmlLayer kmlLayer;
-    private ArrayList<KmlPolygon> kmlPolygons = new ArrayList<>();
     private ArrayList<Zona> zonak = new ArrayList<>();
-
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_main);
-
+        //ablak keret nélküli inicializálása.
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        //Szolgáltatáshoz engedélykérés
+        //Szolgáltatáshoz engedélykérés, ha szükséges és mapfragment felcsatolása
         handlerPermission();
 
     }
@@ -109,11 +105,25 @@ public class MapsMainActivity extends FragmentActivity
                         MY_PERMISSIONS_REQUEST_LOCATION);
             }
         } else {
-            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.map);
-            mapFragment.getMapAsync(this);
+            showMapFragment();
         }
     }
+
+    private void showMapFragment(){
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        FloatingActionButton fab = mapFragment.getView().findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MapsMainActivity.this, ParkingHistoryActivity.class));
+            }
+        });
+
+        mapFragment.getMapAsync(this);
+    }
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -140,26 +150,69 @@ public class MapsMainActivity extends FragmentActivity
 
     @SuppressLint("MissingPermission") //handler call in onCreate
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(final GoogleMap googleMap) {
         try {
             mMap = googleMap;
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Zuglo, 13));
             retrieveFileFromResource();
-            createSimplePolygonsFromKmlLayout();
+            //createSimplePolygonsFromKmlLayout();
+
+            for(KmlContainer container : kmlLayer.getContainers()){
+                for(KmlPlacemark placemark : container.getPlacemarks()){
+                    Zona zona = new Zona(placemark);
+                    PolygonOptions polygonOptions = new PolygonOptions();
+                    polygonOptions.addAll(zona.getPolygonCoords());
+
+                    Polygon polygon = mMap.addPolygon(polygonOptions.strokeColor(Color.RED));
+                    polygon.setClickable(true);
+                    zona.setPolygon(polygon);
+                    zonak.add(zona);
+                }
+            }
+
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
             mMap.setOnPolygonClickListener(new GoogleMap.OnPolygonClickListener() {
                 @Override
                 public void onPolygonClick(Polygon polygon) {
-                    Toast.makeText(MapsMainActivity.this, "click id=" + polygon.getId() + " polygon", Toast.LENGTH_LONG).show();
+//                  Toast.makeText(MapsMainActivity.this, "click id=" + polygon.getId() + " polygon", Toast.LENGTH_LONG).show();
+
+                    showZonaInfoDialogFragment("tesztName", "600");
+
                 }
             });
 
             mMap.setOnMyLocationClickListener(new GoogleMap.OnMyLocationClickListener() {
                 @Override
                 public void onMyLocationClick(@NonNull Location location) {
-                    Toast.makeText(MapsMainActivity.this, "megnyomtál", Toast.LENGTH_LONG).show();
+                        for (Zona zona : zonak) {
+                            Polygon polygon = zona.getPolygon();
+                            boolean inside = PolyUtil.containsLocation(new LatLng(location.getLatitude(), location.getLongitude()), polygon.getPoints(), false);
+                            //Toast.makeText(MapsMainActivity.this, polygon.getId(), Toast.LENGTH_LONG).show();
+                            if (inside) {
+                                try{
+                                    View view = getSupportFragmentManager().findFragmentById(R.id.map).getView();
+                                    Snackbar snackbar = Snackbar
+                                            .make(view, getString(R.string.pushMe), Snackbar.LENGTH_LONG)
+                                            .setAction(R.string.send, new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+                                                    //FIXME send sms
+                                                }
+                                            });
+                                    snackbar.setActionTextColor(Color.RED);
+                                    View sbView = snackbar.getView();
+                                    TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                                    textView.setTextColor(Color.YELLOW);
+                                    snackbar.show();
+
+                                }catch (NullPointerException e ){
+                                    e.printStackTrace();
+                                    Toast.makeText(MapsMainActivity.this, R.string.error, Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }
                 }
             });
 
@@ -168,7 +221,51 @@ public class MapsMainActivity extends FragmentActivity
         }
     }
 
+    public void showZonaInfoDialogFragment(String name, String price){
+        View contextView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.fragment_zona_info, null);
+        EditText rendszamET = (EditText) contextView.findViewById(R.id.rendszamET);
+        TimePicker timePicker = (TimePicker) contextView.findViewById(R.id.timePicker1);
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+        builder.setTitle(getString(R.string.prakingIn) + name + getString(R.string.inZona));
+        builder.setView(contextView);
+        builder.setMessage(getString(R.string.price) + price);
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //TODO send sms
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, null);
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        ((AlertDialog) dialog).getButton(android.app.AlertDialog.BUTTON_POSITIVE).setEnabled(false); //hint muszáj ez előtt show-t hívni
+
+        rendszamET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(TextUtils.isEmpty(editable) && editable.toString().length() == 6){
+                    ((AlertDialog)dialog).getButton(android.app.AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                }else{
+                    ((AlertDialog)dialog).getButton(android.app.AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                }
+            }
+        });
+
+    }
+
+
+/*
     private void createSimplePolygonsFromKmlLayout(){
         for(KmlContainer container : kmlLayer.getContainers()){
             for(KmlPlacemark placemark : container.getPlacemarks()){
@@ -189,13 +286,13 @@ public class MapsMainActivity extends FragmentActivity
                     polygonOptions.addAll(kmlPolygon.getGeometryObject().get(0)); //btw just one elem ... why list<list>?!
                     Polygon polygon = mMap.addPolygon(polygonOptions.strokeColor(Color.RED));
                     polygon.setClickable(true);
+                    allPolygons.add(polygon);
                 }
             }
         }
         Log.i("MTAG_ALLsize", Integer.valueOf(kmlPolygons.size()).toString());
-
     }
-
+*/
     private void setOnFeatureClickListener(){
         kmlLayer.setOnFeatureClickListener(new KmlLayer.OnFeatureClickListener() {
             @Override
@@ -221,7 +318,7 @@ public class MapsMainActivity extends FragmentActivity
 
     private void retrieveFileFromResource() {
         try {
-            kmlLayer = new KmlLayer(mMap, R.raw.zona, getApplicationContext
+            kmlLayer = new KmlLayer(mMap, R.raw.draw, getApplicationContext
                     ());
             kmlLayer.addLayerToMap();
         } catch (IOException e) {
@@ -230,6 +327,5 @@ public class MapsMainActivity extends FragmentActivity
             e.printStackTrace();
         }
     }
-
 
 }

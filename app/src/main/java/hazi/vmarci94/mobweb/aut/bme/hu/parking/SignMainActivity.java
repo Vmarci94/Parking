@@ -146,7 +146,7 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
         if(getSupportFragmentManager().getBackStackEntryCount() > 1){
             getSupportFragmentManager().popBackStack();
         } else {
-            super.onBackPressed();
+            finish();
         }
     }
 

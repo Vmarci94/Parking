@@ -68,7 +68,6 @@ public class SignupFragment extends Fragment implements ConnectionHandlerToMyFra
         }
     }
 
-
     @Override
     public void updateUI(FirebaseUser firebaseUser) {
         if(firebaseUser != null){

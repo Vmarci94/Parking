@@ -8,5 +8,18 @@
     <string name="explanation">további működéshez a készüléknek hozzá kell férnie a hardveres erőforrásokhoz.</string>
     <string name="exit">Kilépés</string>
     <string name="forward">Rendben</string>
+    <string name="title_settings">Beállítások</string>
+    <string name="pushMe">Indítasz parkolást itt?</string>
+    <string name="yes">igen</string>
+    <string name="send">Küldés</string>
+    <string name="error">hiba</string>
+    <string name="clear">törlés</string>
+    <string name="start">Indítás</string>
+    <string name="cancel">Mégse</string>
+    <string name="inZona">zónában</string>
+    <string name="prakingIn">Parkolás a</string>
+    <string name="price">ára</string>
+    <string name="carID">Rendszám</string>
+
 
 </resources>
