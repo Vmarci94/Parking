@@ -30,20 +30,17 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Polygon;
-import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.android.data.Feature;
 import com.google.maps.android.data.kml.KmlContainer;
 import com.google.maps.android.data.kml.KmlLayer;
 import com.google.maps.android.data.kml.KmlPlacemark;
+import com.google.maps.android.data.kml.KmlPolygon;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
-import hazi.vmarci94.mobweb.aut.bme.hu.parking.data.Zona;
 import hazi.vmarci94.mobweb.aut.bme.hu.parking.fragments.SigninFragment;
 
 /**
@@ -59,8 +56,6 @@ public class MapsMainActivity extends AppCompatActivity
 
     private GoogleMap mMap;
     private KmlLayer kmlLayer;
-    private ArrayList<Zona> zonak = new ArrayList<>();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,8 +118,6 @@ public class MapsMainActivity extends AppCompatActivity
         mapFragment.getMapAsync(this);
     }
 
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -155,70 +148,58 @@ public class MapsMainActivity extends AppCompatActivity
             mMap = googleMap;
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Zuglo, 13));
             retrieveFileFromResource();
-            //createSimplePolygonsFromKmlLayout();
-
-            for(KmlContainer container : kmlLayer.getContainers()){
-                for(KmlPlacemark placemark : container.getPlacemarks()){
-                    Zona zona = new Zona(placemark);
-                    PolygonOptions polygonOptions = new PolygonOptions();
-                    polygonOptions.addAll(zona.getPolygonCoords());
-
-                    Polygon polygon = mMap.addPolygon(polygonOptions.strokeColor(Color.RED));
-                    polygon.setClickable(true);
-                    zona.setPolygon(polygon);
-                    zonak.add(zona);
-                }
-            }
-
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
-            mMap.setOnPolygonClickListener(new GoogleMap.OnPolygonClickListener() {
-                @Override
-                public void onPolygonClick(Polygon polygon) {
-//                  Toast.makeText(MapsMainActivity.this, "click id=" + polygon.getId() + " polygon", Toast.LENGTH_LONG).show();
+            setOnFeatureClickListener();
 
-                    showZonaInfoDialogFragment("tesztName", "600");
-
-                }
-            });
-
-            mMap.setOnMyLocationClickListener(new GoogleMap.OnMyLocationClickListener() {
-                @Override
-                public void onMyLocationClick(@NonNull Location location) {
-                        for (Zona zona : zonak) {
-                            Polygon polygon = zona.getPolygon();
-                            boolean inside = PolyUtil.containsLocation(new LatLng(location.getLatitude(), location.getLongitude()), polygon.getPoints(), false);
-                            //Toast.makeText(MapsMainActivity.this, polygon.getId(), Toast.LENGTH_LONG).show();
-                            if (inside) {
-                                try{
-                                    View view = getSupportFragmentManager().findFragmentById(R.id.map).getView();
-                                    Snackbar snackbar = Snackbar
-                                            .make(view, getString(R.string.pushMe), Snackbar.LENGTH_LONG)
-                                            .setAction(R.string.send, new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View view) {
-                                                    //FIXME send sms
-                                                }
-                                            });
-                                    snackbar.setActionTextColor(Color.RED);
-                                    View sbView = snackbar.getView();
-                                    TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-                                    textView.setTextColor(Color.YELLOW);
-                                    snackbar.show();
-
-                                }catch (NullPointerException e ){
-                                    e.printStackTrace();
-                                    Toast.makeText(MapsMainActivity.this, R.string.error, Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        }
-                }
-            });
+            setOnMyLocationClickListener();
 
         } catch (Exception e) {
             Log.e("Exception caught", e.toString());
         }
+    }
+
+    private void setOnMyLocationClickListener() {
+        mMap.setOnMyLocationClickListener(new GoogleMap.OnMyLocationClickListener() {
+            @Override
+            public void onMyLocationClick(@NonNull Location location) {
+                for(KmlContainer container: kmlLayer.getContainers()) {
+                    for (KmlPlacemark placemark : container.getPlacemarks()) {
+                        String name = placemark.getProperty("name");
+                        String[] descriptions = placemark.getProperty("description").split("-");
+                        String phoneNumber = descriptions[0];
+                        String price = descriptions[1];
+                        KmlPolygon polygon = (KmlPolygon) placemark.getGeometry();
+                        if( PolyUtil.containsLocation(
+                                new LatLng(location.getLatitude(), location.getLongitude()),
+                                polygon.getGeometryObject().get(0), false) ){
+
+                            try{
+                                View view = getSupportFragmentManager().findFragmentById(R.id.map).getView();
+                                Snackbar snackbar = Snackbar
+                                        .make(view, getString(R.string.pushMe), Snackbar.LENGTH_LONG)
+                                        .setAction(R.string.send, new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                //FIXME send sms
+                                            }
+                                        });
+                                snackbar.setActionTextColor(Color.RED);
+                                View sbView = snackbar.getView();
+                                TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                                textView.setTextColor(Color.YELLOW);
+                                snackbar.show();
+
+                            }catch (NullPointerException e ){
+                                e.printStackTrace();
+                                Toast.makeText(MapsMainActivity.this, R.string.error, Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 
     public void showZonaInfoDialogFragment(String name, String price){
@@ -264,45 +245,18 @@ public class MapsMainActivity extends AppCompatActivity
 
     }
 
-
-/*
-    private void createSimplePolygonsFromKmlLayout(){
-        for(KmlContainer container : kmlLayer.getContainers()){
-            for(KmlPlacemark placemark : container.getPlacemarks()){
-                if(placemark.getGeometry().getGeometryType().equals(MultiGeometry.class.getSimpleName())){
-                    //if placmark is a MultiGeometry
-                    MultiGeometry multiGeometry = (MultiGeometry) placemark.getGeometry();
-                    for(int i = 0; i<multiGeometry.getGeometryObject().size(); i++){
-                        kmlPolygons.add( (KmlPolygon) multiGeometry.getGeometryObject().get(i));
-                    }
-
-                    //...
-                } else if(placemark.getGeometry().getGeometryType().equals(Polygon.class.getSimpleName())){ // I use just MultiGeometry and KmlPolygon type, just in case ... :)
-                    KmlPolygon kmlPolygon = (KmlPolygon) placemark.getGeometry();
-                    kmlPolygons.add(kmlPolygon);
-                }
-                for(KmlPolygon kmlPolygon : kmlPolygons){
-                    PolygonOptions polygonOptions = new PolygonOptions();
-                    polygonOptions.addAll(kmlPolygon.getGeometryObject().get(0)); //btw just one elem ... why list<list>?!
-                    Polygon polygon = mMap.addPolygon(polygonOptions.strokeColor(Color.RED));
-                    polygon.setClickable(true);
-                    allPolygons.add(polygon);
-                }
-            }
-        }
-        Log.i("MTAG_ALLsize", Integer.valueOf(kmlPolygons.size()).toString());
-    }
-*/
     private void setOnFeatureClickListener(){
         kmlLayer.setOnFeatureClickListener(new KmlLayer.OnFeatureClickListener() {
             @Override
             public void onFeatureClick(Feature feature) {
-                if(feature != null) {
+                try {
                     Toast.makeText(MapsMainActivity.this,
                             "Feature clicked: " + feature.getProperty("name"),
                             Toast.LENGTH_SHORT).show();
-                }else{
-                    Log.e("MTAG", "feature is null :("); //FIXME
+                    //Todo start paking, show dialog fragment
+                }catch (NullPointerException e){
+                    e.printStackTrace();
+                    Log.e("ERROR", "onFeatureClick parameter is null");
                 }
             }
         });
