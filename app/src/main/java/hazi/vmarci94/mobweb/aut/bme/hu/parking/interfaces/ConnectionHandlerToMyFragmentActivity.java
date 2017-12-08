@@ -6,9 +6,9 @@ package hazi.vmarci94.mobweb.aut.bme.hu.parking.interfaces;
 
 public interface ConnectionHandlerToMyFragmentActivity {
     /**
-     * @param name = SignupFragment
+     * @param fragmentTAG = find fragment by tag
      */
-    void signUpWithSignUpFragment(String name);
+    void showFragment(String fragmentTAG);
 
     void signInMe(String email, String passwd);
 

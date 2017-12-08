@@ -34,8 +34,6 @@ public class SigninFragment extends Fragment implements ConnectionHandlerToMyFra
     //FIXME be kell még őket kötni
     private EditText emailText;
     private EditText passwordText;
-    private Button btn;
-    private TextView signupLink;
 
     public SigninFragment(){}
 
@@ -53,13 +51,13 @@ public class SigninFragment extends Fragment implements ConnectionHandlerToMyFra
     private void initUI(View rootView) {
         emailText =  (EditText) rootView.findViewById(R.id.input_email);
         passwordText = (EditText) rootView.findViewById(R.id.input_password);
-        signupLink = (TextView) rootView.findViewById(R.id.link_signup);
-        btn = (Button) rootView.findViewById(R.id.btn_login);
+        TextView signupLink = (TextView) rootView.findViewById(R.id.link_signup);
+        Button btn = (Button) rootView.findViewById(R.id.btn_login);
 
         signupLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                connectionHandlerToMyFragmentActivity.signUpWithSignUpFragment(SignupFragment.TAG);
+                connectionHandlerToMyFragmentActivity.showFragment(SignupFragment.TAG);
             }
         });
 
@@ -69,6 +67,8 @@ public class SigninFragment extends Fragment implements ConnectionHandlerToMyFra
                 connectionHandlerToMyFragmentActivity.signInMe(emailText.getText().toString(), passwordText.getText().toString());
             }
         });
+
+
 
     }
 
@@ -91,6 +91,8 @@ public class SigninFragment extends Fragment implements ConnectionHandlerToMyFra
             startActivityForResult(new Intent(getActivity(), MapsMainActivity.class), ENTER_REQUEST);
         }
     }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

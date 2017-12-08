@@ -55,6 +55,13 @@ public class SignupFragment extends Fragment implements ConnectionHandlerToMyFra
             }
         });
 
+        tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
+
     }
 
     @Override

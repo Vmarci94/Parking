@@ -38,19 +38,19 @@ public class ParkingHistoryActivity extends AppCompatActivity {
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO reset pie chart
+                //TODO reset pie chart and clear db
             }
         });
 
-        loadParkingHistorysInBackground();
-        //loadChart();
+        //loadParkingHistorysInBackground();
+        loadChart();
 
     }
 
     private void loadChart() {
         List<PieEntry> entries = new ArrayList<>();
 
-        for (hazi.vmarci94.mobweb.aut.bme.hu.parking.data.ParkingHistory tmp : parkingHistories){
+        for (ParkingHistory tmp : parkingHistories){
             entries.add(new PieEntry(tmp.getPrice(), tmp.getName()));
         }
 

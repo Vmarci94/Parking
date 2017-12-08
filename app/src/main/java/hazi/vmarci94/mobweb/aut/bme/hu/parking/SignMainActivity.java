@@ -21,7 +21,8 @@ import hazi.vmarci94.mobweb.aut.bme.hu.parking.fragments.SignupFragment;
 import hazi.vmarci94.mobweb.aut.bme.hu.parking.interfaces.ConnectionHandlerToMyFragment;
 import hazi.vmarci94.mobweb.aut.bme.hu.parking.interfaces.ConnectionHandlerToMyFragmentActivity;
 
-public class SignMainActivity extends FragmentActivity implements ConnectionHandlerToMyFragmentActivity {
+public class SignMainActivity extends FragmentActivity
+        implements ConnectionHandlerToMyFragmentActivity {
 
     public static final String TAG = "SignMainActivity";
 
@@ -32,6 +33,7 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
     ConnectionHandlerToMyFragment mConnectionHandlerToSigninFragment;
     ConnectionHandlerToMyFragment mConnectionHandlerToSignupFragment;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,8 +42,7 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
         // [START initialize_auth]
         mAuth = FirebaseAuth.getInstance();
         // [END initialize_auth]
-
-        showFragment(SigninFragment.TAG);
+        showfragment(SigninFragment.TAG);
     }
 
     private void sendEmailVerification() {
@@ -119,7 +120,7 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
         // [END create_user_with_email]
     }
 
-    public void showFragment(String tag) {
+    public void showfragment(String tag) {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -133,12 +134,10 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
                 mConnectionHandlerToSignupFragment = (ConnectionHandlerToMyFragment) fragment;
             }
         }
-        if (fragment != null) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.fragmentLayoutContainer, fragment);
-            ft.addToBackStack(null);
-            ft.commit();
-        }
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fragmentLayoutContainer, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
     }
 
     @Override
@@ -151,8 +150,8 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
     }
 
     @Override
-    public void signUpWithSignUpFragment(String name) {
-        showFragment(name);
+    public void showFragment(String fragmentTAG) {
+        showfragment(fragmentTAG);
     }
 
     @Override
@@ -164,6 +163,7 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
     public void signUpMe(String email, String passwd) {
         createAccount(email, passwd);
     }
+
 
     @Override
     public void signOutMe() {
@@ -215,5 +215,6 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
                 });
         // [END sign_in_with_email]
     }
+
 
 }

@@ -16,10 +16,13 @@
     <string name="clear">törlés</string>
     <string name="start">Indítás</string>
     <string name="cancel">Mégse</string>
-    <string name="inZona">zónában</string>
-    <string name="prakingIn">Parkolás a</string>
-    <string name="price">ára</string>
+    <string name="inZona">zónában.</string>
+    <string name="prakingIn">Parkolás a(z) </string>
+    <string name="price">ára: </string>
+    <string name="valuta">Ft</string>
+    <string name="perhour">/óra</string>
     <string name="carID">Rendszám</string>
+    <string name="pushMeButNoZone">Itt nem kell fizetni! :)</string>
 
 
 </resources>
