@@ -200,10 +200,8 @@ public class MapsMainActivity extends AppCompatActivity
         timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker timePicker, int i, int i1) {
-                Log.i("MTAG", "hour" +Calendar.getInstance().getTime().getHours() );
-                Log.i("MTAG", "minute" + Calendar.getInstance().getTime().getMinutes() );
-
-                if(Calendar.getInstance().getTime().getHours() < i || Calendar.getInstance().getTime().getMinutes() < i1){
+                if(Calendar.getInstance().getTime().getHours() > i ||
+                        (Calendar.getInstance().getTime().getHours() == i &&  Calendar.getInstance().getTime().getMinutes() > i1) ){
                     timePicker.setCurrentHour(Calendar.getInstance().getTime().getHours());
                     timePicker.setCurrentMinute(Calendar.getInstance().getTime().getMinutes());
                 }
