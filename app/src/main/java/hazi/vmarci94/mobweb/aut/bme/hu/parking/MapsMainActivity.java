@@ -1,9 +1,7 @@
 package hazi.vmarci94.mobweb.aut.bme.hu.parking;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -11,13 +9,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -38,6 +35,7 @@ import java.util.List;
 
 import hazi.vmarci94.mobweb.aut.bme.hu.parking.data.ParkingHistory;
 import hazi.vmarci94.mobweb.aut.bme.hu.parking.data.ParkingHistoryDataManager;
+import hazi.vmarci94.mobweb.aut.bme.hu.parking.data.Remind;
 import hazi.vmarci94.mobweb.aut.bme.hu.parking.fragments.SigninFragment;
 import hazi.vmarci94.mobweb.aut.bme.hu.parking.fragments.StartNewParkingDialog;
 
@@ -48,7 +46,6 @@ import hazi.vmarci94.mobweb.aut.bme.hu.parking.fragments.StartNewParkingDialog;
 public class MapsMainActivity extends AppCompatActivity
         implements OnMapReadyCallback, StartNewParkingDialog.INewParkingDialogListener{
 
-    public static final int MY_PERMISSIONS_REQUEST = 100;
     private final LatLng Zuglo = new LatLng(47.508322, 19.094957);
 
     private GoogleMap mMap;
@@ -58,52 +55,13 @@ public class MapsMainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_map_main);
         //ablak keret nélküli inicializálása.
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        handlerPermission(); //permissions csekkolása, kezelése és mapfragment indítása
-    }
 
-    private void handlerPermission(){
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                    || ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
-                    || ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.SEND_SMS)){
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-                alertDialogBuilder.setTitle(R.string.dialogTitle);
-                alertDialogBuilder
-                        .setMessage(R.string.explanation)
-                        .setCancelable(false)
-                        .setNegativeButton(R.string.exit, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                MapsMainActivity.this.finish();
-                            }
-                        })
-                        .setPositiveButton(R.string.forward, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                ActivityCompat.requestPermissions(MapsMainActivity.this,
-                                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
-                                                android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                                                android.Manifest.permission.SEND_SMS},
-                                        MY_PERMISSIONS_REQUEST);
-                            }
-                        });
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-            } else {
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(MapsMainActivity.this,
-                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
-                                android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                                android.Manifest.permission.SEND_SMS},
-                        MY_PERMISSIONS_REQUEST);            }
-        } else {
-            showMapFragment();
-        }
+        showMapFragment();
     }
 
     private void showMapFragment(){
@@ -131,6 +89,8 @@ public class MapsMainActivity extends AppCompatActivity
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
             setOnFeatureClickListener();
             setOnMyLocationClickListener();
+
+
         } catch (Exception e) {
             Log.e("Exception caught", e.toString());
         }
@@ -200,12 +160,16 @@ public class MapsMainActivity extends AppCompatActivity
         kmlLayer.setOnFeatureClickListener(new KmlLayer.OnFeatureClickListener() {
             @Override
             public void onFeatureClick(Feature feature) {
-                try {
-                    String[] args = feature.getProperty("description").split("-");
-                    showZonaInfoDialogFragment(feature.getProperty("name"), args[0], args[1]);
-                }catch (NullPointerException e){
-                    e.printStackTrace();
-                    Log.e("ERROR", "onFeatureClick parameter is null");
+                if(!Remind.getInstance(getApplicationContext()).getParkingStatus()){
+                    try {
+                        String[] args = feature.getProperty("description").split("-");
+                        showZonaInfoDialogFragment(feature.getProperty("name"), args[0], args[1]);
+                    }catch (NullPointerException e){
+                        e.printStackTrace();
+                        Log.e("ERROR", "onFeatureClick parameter is null");
+                    }
+                }else {
+                    Toast.makeText(getApplicationContext(), R.string.ParkingIsActive, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -230,24 +194,6 @@ public class MapsMainActivity extends AppCompatActivity
         }
     }
 
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[], @NonNull int[] grantResults) {
-        if(requestCode == MY_PERMISSIONS_REQUEST && grantResults.length > 0){
-            boolean flag = true;
-            for (int grantResult : grantResults) {
-                if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                    flag = false;
-                }
-            }
-            if(flag){ //all permission garanted
-                showMapFragment();
-            }else{ //some permission denied
-                finish();
-            }
-        }
-    }
 
     @SuppressLint("StaticFieldLeak")
     private void loadParkingHistorysInBackground() {

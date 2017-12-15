@@ -118,7 +118,6 @@ public class StartNewParkingDialog extends AppCompatDialogFragment{
                     rendszam, new AlarmManager.OnAlarmListener() {
                         @Override
                         public void onAlarm() {
-                            Log.i("TAG", "Lejárt az idő");
                             Remind remind = Remind.getInstance(getContext());
                             String number = remind.getParkingNumber();
                             sendStopSms(number);

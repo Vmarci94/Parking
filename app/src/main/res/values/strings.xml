@@ -25,6 +25,7 @@
     <string name="pushMeButNoZone">Itt nem kell fizetni! :)</string>
     <string name="interfaceMustImplementErrorMsg">Activity must implement the INewShoppingItemDialogListener interface!</string>
     <string name="payment">költségek</string>
+    <string name="ParkingIsActive">Jelenleg van aktív parkolás</string>
 
 
 </resources>

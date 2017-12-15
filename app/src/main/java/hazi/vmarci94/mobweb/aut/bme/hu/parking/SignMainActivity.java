@@ -1,10 +1,14 @@
 package hazi.vmarci94.mobweb.aut.bme.hu.parking;
 
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.WindowManager;
@@ -25,6 +29,7 @@ public class SignMainActivity extends FragmentActivity
         implements ConnectionHandlerToMyFragmentActivity {
 
     public static final String TAG = "SignMainActivity";
+    public static final int MY_PERMISSIONS_REQUEST = 100;
 
     // [START declare_auth]
     private FirebaseAuth mAuth;
@@ -38,11 +43,51 @@ public class SignMainActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_main);
-
         // [START initialize_auth]
         mAuth = FirebaseAuth.getInstance();
         // [END initialize_auth]
-        showfragment(SigninFragment.TAG);
+        handlerPermission();
+    }
+
+    private void handlerPermission(){
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.SEND_SMS)){
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                alertDialogBuilder.setTitle(R.string.dialogTitle);
+                alertDialogBuilder
+                        .setMessage(R.string.explanation)
+                        .setCancelable(false)
+                        .setNegativeButton(R.string.exit, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                SignMainActivity.this.finish();
+                            }
+                        })
+                        .setPositiveButton(R.string.forward, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                ActivityCompat.requestPermissions(SignMainActivity.this,
+                                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
+                                                android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                                                android.Manifest.permission.SEND_SMS},
+                                        MY_PERMISSIONS_REQUEST);
+                            }
+                        });
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(SignMainActivity.this,
+                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
+                                android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                                android.Manifest.permission.SEND_SMS},
+                        MY_PERMISSIONS_REQUEST);            }
+        } else {
+            showfragment(SigninFragment.TAG);
+        }
     }
 
     private void sendEmailVerification() {
@@ -170,13 +215,6 @@ public class SignMainActivity extends FragmentActivity
         signOut();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        mConnectionHandlerToSigninFragment.updateUI(currentUser);
-    }
-
     public void signOut() {
         mAuth.signOut();
         Log.i("MTAG", "kijelentkezteteve");
@@ -216,5 +254,23 @@ public class SignMainActivity extends FragmentActivity
         // [END sign_in_with_email]
     }
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+        if(requestCode == MY_PERMISSIONS_REQUEST && grantResults.length > 0){
+            boolean flag = true;
+            for (int grantResult : grantResults) {
+                if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                    flag = false;
+                }
+            }
+            if(flag){ //all permission garanted
+                showfragment(SigninFragment.TAG);
+            }else{ //some permission denied
+                finish();
+            }
+        }
+    }
 
 }
