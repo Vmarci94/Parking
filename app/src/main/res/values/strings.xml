@@ -23,6 +23,8 @@
     <string name="perhour">/óra</string>
     <string name="carID">Rendszám</string>
     <string name="pushMeButNoZone">Itt nem kell fizetni! :)</string>
+    <string name="interfaceMustImplementErrorMsg">Activity must implement the INewShoppingItemDialogListener interface!</string>
+    <string name="payment">költségek</string>
 
 
 </resources>
