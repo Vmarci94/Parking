@@ -2,15 +2,16 @@ package hazi.vmarci94.mobweb.aut.bme.hu.parking;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -45,6 +46,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Date;
 
 import hazi.vmarci94.mobweb.aut.bme.hu.parking.data.Remind;
 import hazi.vmarci94.mobweb.aut.bme.hu.parking.fragments.SigninFragment;
@@ -198,12 +200,17 @@ public class MapsMainActivity extends AppCompatActivity
         timePicker.setIs24HourView(true);
 
         timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onTimeChanged(TimePicker timePicker, int i, int i1) {
-                if(Calendar.getInstance().getTime().getHours() > i ||
-                        (Calendar.getInstance().getTime().getHours() == i &&  Calendar.getInstance().getTime().getMinutes() > i1) ){
-                    timePicker.setCurrentHour(Calendar.getInstance().getTime().getHours());
-                    timePicker.setCurrentMinute(Calendar.getInstance().getTime().getMinutes());
+                Date currentDate = Calendar.getInstance().getTime();
+                int currentHour = currentDate.getHours();
+                int currentMin = currentDate.getMinutes();
+
+                if(currentHour > i ||
+                        (currentHour == i &&  currentMin  > i1) ){
+                    timePicker.setHour(currentHour);
+                    timePicker.setMinute(currentMin);
                 }
             }
         });
@@ -213,6 +220,7 @@ public class MapsMainActivity extends AppCompatActivity
         builder.setView(contextView);
         builder.setMessage(getString(R.string.price) + price);
         builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 //TODO send sms and save history
@@ -247,17 +255,44 @@ public class MapsMainActivity extends AppCompatActivity
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N) //AlarmManager.OnAlarmListener() must min api24
     public void sendSMS(String number, String rendszam, TimePicker timePicker){
         SmsManager smsManager = SmsManager.getDefault();
         smsManager.sendTextMessage(number, null, rendszam, null, null);
-        Remind.getInstance(this).setParkingNumber(number);
-        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pending = PendingIntent.getBroadcast(this, 0, new Intent(this, AlarmReceiver.class), 0);
+        Remind.getInstance(getApplicationContext()).setParkingNumber(number);
+        long time = getAlarmTimeIntervalAtMillisec(Calendar.getInstance().getTime(), timePicker);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-        if (manager != null) {
-            manager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + timePicker.getDrawingTime(), pending);
+        if(alarmManager != null) {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, time + System.currentTimeMillis(),
+                    rendszam, new AlarmManager.OnAlarmListener() {
+                @Override
+                public void onAlarm() {
+                    Log.i("TAG", "Lejárt az idő");
+                    Remind remind = Remind.getInstance(getApplicationContext());
+                    String number = remind.getParkingNumber();
+                    sendStopSms(number);
+                    remind.deleteParkingNumber();
+                }
+            }, null);
+        }else{
+            Log.e("HIBA", "alarmManager is null");
         }
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public long getAlarmTimeIntervalAtMillisec(Date date, TimePicker timePicker){
+        int setHour = timePicker.getHour();
+        int setMin = timePicker.getMinute();
+        int differentHour = setHour - date.getHours();
+        int differentMinute = setMin - date.getMinutes();
+        int timeAtMinute = (differentHour*60) + differentMinute;
+        return (long) timeAtMinute*60*1000;
+    }
+
+    public void sendStopSms(String number){
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage(number, null, "stop", null, null);
     }
 
     private void setOnFeatureClickListener(){

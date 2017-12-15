@@ -45,9 +45,6 @@
 
         <activity android:name=".ParkingHistoryActivity" />
 
-        <receiver android:name=".AlarmReceiver" android:process=":remote">
-        </receiver>
-
     </application>
 
 </manifest>
