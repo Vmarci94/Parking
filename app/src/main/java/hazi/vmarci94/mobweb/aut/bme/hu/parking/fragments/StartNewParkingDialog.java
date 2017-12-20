@@ -1,8 +1,6 @@
 package hazi.vmarci94.mobweb.aut.bme.hu.parking.fragments;
 
-import android.app.AlarmManager;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,7 +14,6 @@ import android.telephony.SmsManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +41,7 @@ public class StartNewParkingDialog extends AppCompatDialogFragment{
 
     public interface INewParkingDialogListener{
         void onNewParkingCreated(ParkingHistory newParkingHistoryItem);
+        void onDetach(long time);
     }
 
     INewParkingDialogListener listener;
@@ -51,7 +49,7 @@ public class StartNewParkingDialog extends AppCompatDialogFragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View contextView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_zona_info, null);
+        View contextView = LayoutInflater.from(getContext()).inflate(R.layout.custom_dialog_fragmen_start_parking, null);
         rendszamET = (EditText) contextView.findViewById(R.id.rendszamET);
         timePicker = (TimePicker) contextView.findViewById(R.id.timePicker1);
         timePicker.setIs24HourView(true);
@@ -95,6 +93,7 @@ public class StartNewParkingDialog extends AppCompatDialogFragment{
                 sendSMS(phoneNumb, rendszamET.getText().toString(), timePicker);
                 try {
                     ParkingHistory parkingHistory = new ParkingHistory(name, Integer.valueOf(price));
+
                     parkingHistory.save();
                     listener.onNewParkingCreated(parkingHistory);
                 }catch (IllegalFormatException e){
@@ -111,22 +110,7 @@ public class StartNewParkingDialog extends AppCompatDialogFragment{
         smsManager.sendTextMessage(number, null, rendszam, null, null);
         Remind.getInstance(getContext()).setParkingNumber(number);
         long time = getAlarmTimeIntervalAtMillisec(Calendar.getInstance().getTime(), timePicker);
-        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-
-        if(alarmManager != null) {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, time + System.currentTimeMillis(),
-                    rendszam, new AlarmManager.OnAlarmListener() {
-                        @Override
-                        public void onAlarm() {
-                            Remind remind = Remind.getInstance(getContext());
-                            String number = remind.getParkingNumber();
-                            sendStopSms(number);
-                            remind.deleteParkingNumber();
-                        }
-                    }, null);
-        }else{
-            Log.e("HIBA", "alarmManager is null");
-        }
+        listener.onDetach(time);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -137,11 +121,6 @@ public class StartNewParkingDialog extends AppCompatDialogFragment{
         int differentMinute = setMin - date.getMinutes();
         int timeAtMinute = (differentHour*60) + differentMinute;
         return (long) timeAtMinute*60*1000;
-    }
-
-    public void sendStopSms(String number){
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(number, null, "stop", null, null);
     }
 
     @NonNull

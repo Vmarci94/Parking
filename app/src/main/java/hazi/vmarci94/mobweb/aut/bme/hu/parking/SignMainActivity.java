@@ -103,12 +103,12 @@ public class SignMainActivity extends FragmentActivity
 
                         if (task.isSuccessful()) {
                             Toast.makeText(SignMainActivity.this,
-                                    "Verification email sent to " + user.getEmail(),
+                                    getString(R.string.verificationEmailSendTo) + user.getEmail(),
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            Log.e(TAG, "sendEmailVerification", task.getException());
+                            Log.e(TAG, getString(R.string.verificationEmailSendTo), task.getException());
                             Toast.makeText(SignMainActivity.this,
-                                    "Failed to send verification email.",
+                                    getString(R.string.verificationEmailError),
                                     Toast.LENGTH_SHORT).show();
                         }
                         // [END_EXCLUDE]
@@ -122,21 +122,14 @@ public class SignMainActivity extends FragmentActivity
         boolean valid = true;
         if (TextUtils.isEmpty(email)) {
             valid = false;
-        } else {
-            //FIXME ?!?!
-        }
-
-        if (TextUtils.isEmpty(password)) {
+        }if (TextUtils.isEmpty(password)) {
             valid = false;
-        } else {
-            //FIXME ?!?!
         }
 
         return valid;
     }
 
     private void createAccount(String email, String password) {
-        Log.d(TAG, "createAccount:" + email);
         if (!validateForm(email, password)) {
             return;
         }
@@ -148,14 +141,13 @@ public class SignMainActivity extends FragmentActivity
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             sendEmailVerification();
                             mConnectionHandlerToSignupFragment.updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(SignMainActivity.this, "Authentication failed.",
+                            Log.w(TAG, getString(R.string.createUserWithEmailAndPasswError), task.getException());
+                            Toast.makeText(SignMainActivity.this, getString(R.string.authError),
                                     Toast.LENGTH_SHORT).show();
                             mConnectionHandlerToSignupFragment.updateUI(null);
                         }
@@ -217,11 +209,9 @@ public class SignMainActivity extends FragmentActivity
 
     public void signOut() {
         mAuth.signOut();
-        Log.i("MTAG", "kijelentkezteteve");
     }
 
     private void signIn(String email, String password) {
-        Log.d(TAG, "signIn:" + email);
         if (!validateForm(email, password)) {
             return;
         }
@@ -233,13 +223,12 @@ public class SignMainActivity extends FragmentActivity
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             mConnectionHandlerToSigninFragment.updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(SignMainActivity.this, "Authentication failed.",
+                            Log.w(TAG, getString(R.string.singInError), task.getException());
+                            Toast.makeText(SignMainActivity.this, getString(R.string.authError),
                                     Toast.LENGTH_SHORT).show();
                             mConnectionHandlerToSigninFragment.updateUI(null);
                         }

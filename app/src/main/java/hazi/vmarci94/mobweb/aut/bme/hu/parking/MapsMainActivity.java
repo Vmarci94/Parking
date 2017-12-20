@@ -1,20 +1,25 @@
 package hazi.vmarci94.mobweb.aut.bme.hu.parking;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.AlarmManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -51,23 +56,26 @@ public class MapsMainActivity extends AppCompatActivity
     private GoogleMap mMap;
     private KmlLayer kmlLayer;
     private ParkingHistoryDataManager parkingHistoryDataManager;
+    AlarmManager alarmManager;
+    AlarmManager.OnAlarmListener alarmListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_map_main);
-        //ablak keret nélküli inicializálása.
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         showMapFragment();
+        loadParkingHistorysInBackground();
     }
 
     private void showMapFragment(){
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         FloatingActionButton fab = mapFragment.getView().findViewById(R.id.fab);
+        fab.setImageResource(R.drawable.ic_account_balance_wallet_black_48dp);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,10 +111,10 @@ public class MapsMainActivity extends AppCompatActivity
                 try {
                     for (KmlContainer container : kmlLayer.getContainers()) {
                         for (KmlPlacemark placemark : container.getPlacemarks()) {
-                            String name = placemark.getProperty("name");
+                            final String name = placemark.getProperty("name");
                             String[] descriptions = placemark.getProperty("description").split("-");
                             final String phoneNumber = descriptions[0];
-                            String price = descriptions[1];
+                            final String price = descriptions[1];
                             KmlPolygon polygon = (KmlPolygon) placemark.getGeometry();
                             View view = getSupportFragmentManager().findFragmentById(R.id.map).getView();
                             Snackbar snackbar;
@@ -116,9 +124,32 @@ public class MapsMainActivity extends AppCompatActivity
                                 snackbar = Snackbar
                                         .make(view, getString(R.string.pushMe), Snackbar.LENGTH_LONG)
                                         .setAction(R.string.send, new View.OnClickListener() {
+                                            @TargetApi(Build.VERSION_CODES.N)
+                                            @RequiresApi(api = Build.VERSION_CODES.M)
                                             @Override
                                             public void onClick(View view) {
-                                                //FIXME send sms
+                                                if(!Remind.getInstance(getApplicationContext()).getParkingStatus()){
+                                                    showZonaInfoDialogFragment(name, phoneNumber, price);
+                                                }else {
+                                                    Snackbar snackbar= Snackbar
+                                                            .make(view, getString(R.string.ParkingIsActive), Snackbar.LENGTH_LONG)
+                                                            .setAction(R.string.shutDownParking, new View.OnClickListener() {
+                                                                @RequiresApi(api = Build.VERSION_CODES.N)
+                                                                @Override
+                                                                public void onClick(View view) {
+                                                                    //TODO unregister alarm
+                                                                    if(alarmManager != null && alarmListener != null){
+                                                                        alarmManager.cancel(alarmListener);
+                                                                    }
+                                                                    Remind.getInstance(getApplicationContext()).deleteParkingNumber();
+                                                                }
+                                                            });
+                                                    snackbar.setActionTextColor(Color.RED);
+                                                    View sbView = snackbar.getView();
+                                                    TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                                                    textView.setTextColor(Color.YELLOW);
+                                                    snackbar.show();
+                                                }
                                             }
                                         });
                                 snackbar.setActionTextColor(Color.RED);
@@ -166,10 +197,28 @@ public class MapsMainActivity extends AppCompatActivity
                         showZonaInfoDialogFragment(feature.getProperty("name"), args[0], args[1]);
                     }catch (NullPointerException e){
                         e.printStackTrace();
-                        Log.e("ERROR", "onFeatureClick parameter is null");
+                        Log.e("ERROR", getString(R.string.onFeratureClickParamsIsNull));
                     }
                 }else {
-                    Toast.makeText(getApplicationContext(), R.string.ParkingIsActive, Toast.LENGTH_LONG).show();
+                    View view = getSupportFragmentManager().findFragmentById(R.id.map).getView();
+                    Snackbar snackbar= Snackbar
+                                .make(view, getString(R.string.ParkingIsActive), Snackbar.LENGTH_LONG)
+                                .setAction(R.string.shutDownParking, new View.OnClickListener() {
+                                    @RequiresApi(api = Build.VERSION_CODES.N)
+                                    @Override
+                                    public void onClick(View view) {
+                                        //TODO unregister alarm
+                                        if(alarmManager != null && alarmListener != null){
+                                            alarmManager.cancel(alarmListener);
+                                        }
+                                        Remind.getInstance(getApplicationContext()).deleteParkingNumber();
+                                    }
+                                });
+                        snackbar.setActionTextColor(Color.RED);
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+                        snackbar.show();
                 }
             }
         });
@@ -215,5 +264,33 @@ public class MapsMainActivity extends AppCompatActivity
     @Override
     public void onNewParkingCreated(ParkingHistory newParkingHistoryItem) {
         parkingHistoryDataManager.addItem(newParkingHistoryItem);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onDetach(long time) {
+
+        alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        alarmListener = new AlarmManager.OnAlarmListener() {
+            @Override
+            public void onAlarm() {
+                Remind remind = Remind.getInstance(getApplicationContext());
+                String number = remind.getParkingNumber();
+                sendStopSms(number);
+                remind.deleteParkingNumber();
+            }
+        };
+
+        if(alarmManager != null) {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, time + System.currentTimeMillis(),
+                    "stopSms", alarmListener, null);
+        }else{
+            Log.e("HIBA", "alarmManager is null");
+        }
+    }
+
+    public void sendStopSms(String number){
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage(number, null, getString(R.string.stop), null, null);
     }
 }

@@ -29,7 +29,7 @@ public class Remind {
         this.sharedPrefEditor = sharedPreferences.edit();
     }
 
-    public boolean getParkingStatus(){
+    public final boolean getParkingStatus(){
         return sharedPreferences.getBoolean(PARKING_STATUS, false);
     }
 

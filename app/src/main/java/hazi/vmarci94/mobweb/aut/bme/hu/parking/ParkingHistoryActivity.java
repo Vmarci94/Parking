@@ -1,5 +1,6 @@
 package hazi.vmarci94.mobweb.aut.bme.hu.parking;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +25,7 @@ import hazi.vmarci94.mobweb.aut.bme.hu.parking.data.ParkingHistoryDataManager;
 
 public class ParkingHistoryActivity extends AppCompatActivity {
 
-    private PieChart chartHoliday;
+    private PieChart chartParkingHistory;
     private ParkingHistoryDataManager parkingHistoryDataManager;
 
     @Override
@@ -32,18 +33,17 @@ public class ParkingHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_property);
 
-        chartHoliday = (PieChart) findViewById(R.id.chartParking);
+        chartParkingHistory = (PieChart) findViewById(R.id.chartParking);
         Button btnClear = (Button) findViewById(R.id.btnClear);
         parkingHistoryDataManager = ParkingHistoryDataManager.getInstance();
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO reset pie chart and clear db
+                chartParkingHistory.clear();
+                parkingHistoryDataManager.removeAll();
             }
         });
-
         loadChart();
-
     }
 
     private void loadChart() {
@@ -57,8 +57,11 @@ public class ParkingHistoryActivity extends AppCompatActivity {
         dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
 
         PieData data = new PieData(dataSet);
-        chartHoliday.setData(data);
-        chartHoliday.invalidate();
+        chartParkingHistory.setData(data);
+        chartParkingHistory.invalidate();
+        chartParkingHistory.setCenterText(getString(R.string.pieChartCenterString));
+        chartParkingHistory.setCenterTextSize(14f);
+        chartParkingHistory.setCenterTextColor(Color.GREEN);
 
     }
 
