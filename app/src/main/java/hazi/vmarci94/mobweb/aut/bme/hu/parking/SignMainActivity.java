@@ -1,10 +1,14 @@
 package hazi.vmarci94.mobweb.aut.bme.hu.parking;
 
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.WindowManager;
@@ -21,9 +25,11 @@ import hazi.vmarci94.mobweb.aut.bme.hu.parking.fragments.SignupFragment;
 import hazi.vmarci94.mobweb.aut.bme.hu.parking.interfaces.ConnectionHandlerToMyFragment;
 import hazi.vmarci94.mobweb.aut.bme.hu.parking.interfaces.ConnectionHandlerToMyFragmentActivity;
 
-public class SignMainActivity extends FragmentActivity implements ConnectionHandlerToMyFragmentActivity {
+public class SignMainActivity extends FragmentActivity
+        implements ConnectionHandlerToMyFragmentActivity {
 
     public static final String TAG = "SignMainActivity";
+    public static final int MY_PERMISSIONS_REQUEST = 100;
 
     // [START declare_auth]
     private FirebaseAuth mAuth;
@@ -32,16 +38,56 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
     ConnectionHandlerToMyFragment mConnectionHandlerToSigninFragment;
     ConnectionHandlerToMyFragment mConnectionHandlerToSignupFragment;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_main);
-
         // [START initialize_auth]
         mAuth = FirebaseAuth.getInstance();
         // [END initialize_auth]
+        handlerPermission();
+    }
 
-        showFragment(SigninFragment.TAG);
+    private void handlerPermission(){
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.SEND_SMS)){
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                alertDialogBuilder.setTitle(R.string.dialogTitle);
+                alertDialogBuilder
+                        .setMessage(R.string.explanation)
+                        .setCancelable(false)
+                        .setNegativeButton(R.string.exit, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                SignMainActivity.this.finish();
+                            }
+                        })
+                        .setPositiveButton(R.string.forward, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                ActivityCompat.requestPermissions(SignMainActivity.this,
+                                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
+                                                android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                                                android.Manifest.permission.SEND_SMS},
+                                        MY_PERMISSIONS_REQUEST);
+                            }
+                        });
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(SignMainActivity.this,
+                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
+                                android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                                android.Manifest.permission.SEND_SMS},
+                        MY_PERMISSIONS_REQUEST);            }
+        } else {
+            showfragment(SigninFragment.TAG);
+        }
     }
 
     private void sendEmailVerification() {
@@ -57,12 +103,12 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
 
                         if (task.isSuccessful()) {
                             Toast.makeText(SignMainActivity.this,
-                                    "Verification email sent to " + user.getEmail(),
+                                    getString(R.string.verificationEmailSendTo) + user.getEmail(),
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            Log.e(TAG, "sendEmailVerification", task.getException());
+                            Log.e(TAG, getString(R.string.verificationEmailSendTo), task.getException());
                             Toast.makeText(SignMainActivity.this,
-                                    "Failed to send verification email.",
+                                    getString(R.string.verificationEmailError),
                                     Toast.LENGTH_SHORT).show();
                         }
                         // [END_EXCLUDE]
@@ -76,21 +122,14 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
         boolean valid = true;
         if (TextUtils.isEmpty(email)) {
             valid = false;
-        } else {
-            //FIXME ?!?!
-        }
-
-        if (TextUtils.isEmpty(password)) {
+        }if (TextUtils.isEmpty(password)) {
             valid = false;
-        } else {
-            //FIXME ?!?!
         }
 
         return valid;
     }
 
     private void createAccount(String email, String password) {
-        Log.d(TAG, "createAccount:" + email);
         if (!validateForm(email, password)) {
             return;
         }
@@ -102,14 +141,13 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             sendEmailVerification();
                             mConnectionHandlerToSignupFragment.updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(SignMainActivity.this, "Authentication failed.",
+                            Log.w(TAG, getString(R.string.createUserWithEmailAndPasswError), task.getException());
+                            Toast.makeText(SignMainActivity.this, getString(R.string.authError),
                                     Toast.LENGTH_SHORT).show();
                             mConnectionHandlerToSignupFragment.updateUI(null);
                         }
@@ -119,7 +157,7 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
         // [END create_user_with_email]
     }
 
-    public void showFragment(String tag) {
+    public void showfragment(String tag) {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -133,12 +171,10 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
                 mConnectionHandlerToSignupFragment = (ConnectionHandlerToMyFragment) fragment;
             }
         }
-        if (fragment != null) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.fragmentLayoutContainer, fragment);
-            ft.addToBackStack(null);
-            ft.commit();
-        }
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fragmentLayoutContainer, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
     }
 
     @Override
@@ -151,8 +187,8 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
     }
 
     @Override
-    public void signUpWithSignUpFragment(String name) {
-        showFragment(name);
+    public void showFragment(String fragmentTAG) {
+        showfragment(fragmentTAG);
     }
 
     @Override
@@ -165,25 +201,17 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
         createAccount(email, passwd);
     }
 
+
     @Override
     public void signOutMe() {
         signOut();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        mConnectionHandlerToSigninFragment.updateUI(currentUser);
-    }
-
     public void signOut() {
         mAuth.signOut();
-        Log.i("MTAG", "kijelentkezteteve");
     }
 
     private void signIn(String email, String password) {
-        Log.d(TAG, "signIn:" + email);
         if (!validateForm(email, password)) {
             return;
         }
@@ -195,13 +223,12 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             mConnectionHandlerToSigninFragment.updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(SignMainActivity.this, "Authentication failed.",
+                            Log.w(TAG, getString(R.string.singInError), task.getException());
+                            Toast.makeText(SignMainActivity.this, getString(R.string.authError),
                                     Toast.LENGTH_SHORT).show();
                             mConnectionHandlerToSigninFragment.updateUI(null);
                         }
@@ -214,6 +241,25 @@ public class SignMainActivity extends FragmentActivity implements ConnectionHand
                     }
                 });
         // [END sign_in_with_email]
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+        if(requestCode == MY_PERMISSIONS_REQUEST && grantResults.length > 0){
+            boolean flag = true;
+            for (int grantResult : grantResults) {
+                if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                    flag = false;
+                }
+            }
+            if(flag){ //all permission garanted
+                showfragment(SigninFragment.TAG);
+            }else{ //some permission denied
+                finish();
+            }
+        }
     }
 
 }

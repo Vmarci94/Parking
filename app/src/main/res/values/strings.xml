@@ -1,9 +1,7 @@
 <resources>
     <string name="app_name">Parking</string>
-    <string name="login">Bejelentkezés</string>
+    <string name="login">bejelentkezés</string>
     <string name="signup_text">Nincs még fiókod? Csináj egyet!</string>
-    <string name="passwd">Jelszó</string>
-    <string name="email">Email</string>
     <string name="dialogTitle">Engedélykérés</string>
     <string name="explanation">további működéshez a készüléknek hozzá kell férnie a hardveres erőforrásokhoz.</string>
     <string name="exit">Kilépés</string>
@@ -11,15 +9,37 @@
     <string name="title_settings">Beállítások</string>
     <string name="pushMe">Indítasz parkolást itt?</string>
     <string name="yes">igen</string>
-    <string name="send">Küldés</string>
+    <string name="send">küldés</string>
     <string name="error">hiba</string>
     <string name="clear">törlés</string>
-    <string name="start">Indítás</string>
-    <string name="cancel">Mégse</string>
-    <string name="inZona">zónában</string>
-    <string name="prakingIn">Parkolás a</string>
-    <string name="price">ára</string>
-    <string name="carID">Rendszám</string>
+    <string name="start">indítás</string>
+    <string name="cancel">mégse</string>
+    <string name="inZona">zónában.</string>
+    <string name="prakingIn">parkolás a(z) </string>
+    <string name="price">ára: </string>
+    <string name="valuta">Ft</string>
+    <string name="perhour">/óra</string>
+    <string name="carID">rendszám</string>
+    <string name="pushMeButNoZone">Itt nem kell fizetni! :)</string>
+    <string name="interfaceMustImplementErrorMsg">Az activitynek muszáj implementálnia az interfészt!</string>
+    <string name="payment">költségek</string>
+    <string name="ParkingIsActive">jelenleg van aktív parkolás</string>
+    <string name="shutDownParking">leállítás</string>
+    <string name="pieChartCenterString">ezeken a helyeken parkoltál</string>
+    <string name="alarmManagerIsNull">\"alarmManager is null\"</string>
+    <string name="stop">stop</string>
+    <string name="defaultPhoneNumber">36301111111</string>
+    <string name="onFeratureClickParamsIsNull">\"onFeatureClick parameter is null\"</string>
+    <string name="verificationEmailSendTo">érvényesíő emailt elküldtük a</string>
+    <string name="verificationEmailError">hiba lépet fel az érvényesítő email elküldésekkor.</string>
+    <string name="createUserWithEmailAndPasswError">hiba lépet fel amikor regisztrálni akartál.</string>
+    <string name="authError">bejelentkezési hiba</string>
+    <string name="singInError">\"hiba lépet fel\"</string>
+    <string name="email">email</string>
+    <string name="password">jelszó</string>
+    <string name="create_account">csinálj fiókot</string>
+    <string name="already_a_member_login">Eszedbejutott? Jelentkezz be!</string>
+    <string name="no_account_yet_create_one">Nincs még fiókod? Csinálj egyett!</string>
 
 
 </resources>

@@ -1,6 +1,6 @@
 package hazi.vmarci94.mobweb.aut.bme.hu.parking;
 
-import android.os.AsyncTask;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hazi.vmarci94.mobweb.aut.bme.hu.parking.data.ParkingHistory;
+import hazi.vmarci94.mobweb.aut.bme.hu.parking.data.ParkingHistoryDataManager;
 
 /**
  * Created by vmarci94 on 2017. 11. 27..
@@ -24,77 +25,44 @@ import hazi.vmarci94.mobweb.aut.bme.hu.parking.data.ParkingHistory;
 
 public class ParkingHistoryActivity extends AppCompatActivity {
 
-    private PieChart chartHoliday;
-    private Button btnClear;
-    private final List<ParkingHistory> parkingHistories = new ArrayList<>(); //szebb lenne a konstruktorban inicializálni, de activitynél a konstruktor nincs sok értelme, az onCreate-ben való initért pedig sír.
+    private PieChart chartParkingHistory;
+    private ParkingHistoryDataManager parkingHistoryDataManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_property);
 
-        chartHoliday = (PieChart) findViewById(R.id.chartParking);
-        btnClear = (Button) findViewById(R.id.btnClear);
+        chartParkingHistory = (PieChart) findViewById(R.id.chartParking);
+        Button btnClear = (Button) findViewById(R.id.btnClear);
+        parkingHistoryDataManager = ParkingHistoryDataManager.getInstance();
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO reset pie chart
+                chartParkingHistory.clear();
+                parkingHistoryDataManager.removeAll();
             }
         });
-
-        loadParkingHistorysInBackground();
-        //loadChart();
-
+        loadChart();
     }
 
     private void loadChart() {
         List<PieEntry> entries = new ArrayList<>();
 
-        for (hazi.vmarci94.mobweb.aut.bme.hu.parking.data.ParkingHistory tmp : parkingHistories){
+        for (ParkingHistory tmp : parkingHistoryDataManager){
             entries.add(new PieEntry(tmp.getPrice(), tmp.getName()));
         }
 
-        PieDataSet dataSet = new PieDataSet(entries, "PaymentAndTaxes");
+        PieDataSet dataSet = new PieDataSet(entries, getString(R.string.payment));
         dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
 
         PieData data = new PieData(dataSet);
-        chartHoliday.setData(data);
-        chartHoliday.invalidate();
+        chartParkingHistory.setData(data);
+        chartParkingHistory.invalidate();
+        chartParkingHistory.setCenterText(getString(R.string.pieChartCenterString));
+        chartParkingHistory.setCenterTextSize(14f);
+        chartParkingHistory.setCenterTextColor(Color.GREEN);
 
-    }
-
-    private void loadParkingHistorysInBackground() {
-        new AsyncTask<Void, Void, List<hazi.vmarci94.mobweb.aut.bme.hu.parking.data.ParkingHistory>>() {
-
-            @Override
-            protected List<ParkingHistory> doInBackground(Void... voids) {
-                return ParkingHistory.listAll(ParkingHistory.class);
-            }
-
-            @Override
-            protected void onPostExecute(List<ParkingHistory> shoppingItems) {
-                super.onPostExecute(shoppingItems);
-                update(shoppingItems);
-            }
-        }.execute();
-    }
-
-
-    public void addItem(ParkingHistory parkingHistory){
-        parkingHistories.add(parkingHistory);
-    }
-
-    public void remove(ParkingHistory parkingHistory){
-        parkingHistories.remove(parkingHistory);
-    }
-
-    public void update(List<hazi.vmarci94.mobweb.aut.bme.hu.parking.data.ParkingHistory> parkingHistoryList){
-        parkingHistories.clear();
-        parkingHistories.addAll(parkingHistoryList);
-    }
-
-    public void clear(){
-        this.parkingHistories.clear();
     }
 
 }

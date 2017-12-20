@@ -35,6 +35,38 @@
         <styleUrl>#poly-0097A7-2701-92-highlight</styleUrl>
       </Pair>
     </StyleMap>
+    <Style id="poly-01579B-1200-77-normal">
+      <LineStyle>
+        <color>ff9b5701</color>
+        <width>1.2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>4d9b5701</color>
+        <fill>1</fill>
+        <outline>1</outline>
+      </PolyStyle>
+    </Style>
+    <Style id="poly-01579B-1200-77-highlight">
+      <LineStyle>
+        <color>ff9b5701</color>
+        <width>1.8</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>4d9b5701</color>
+        <fill>1</fill>
+        <outline>1</outline>
+      </PolyStyle>
+    </Style>
+    <StyleMap id="poly-01579B-1200-77">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#poly-01579B-1200-77-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#poly-01579B-1200-77-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
     <Style id="poly-7CB342-1200-77-nodesc-normal">
       <LineStyle>
         <color>ff42b37c</color>
@@ -71,6 +103,102 @@
       <Pair>
         <key>highlight</key>
         <styleUrl>#poly-7CB342-1200-77-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="poly-9C27B0-1200-77-normal">
+      <LineStyle>
+        <color>ffb0279c</color>
+        <width>1.2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>4db0279c</color>
+        <fill>1</fill>
+        <outline>1</outline>
+      </PolyStyle>
+    </Style>
+    <Style id="poly-9C27B0-1200-77-highlight">
+      <LineStyle>
+        <color>ffb0279c</color>
+        <width>1.8</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>4db0279c</color>
+        <fill>1</fill>
+        <outline>1</outline>
+      </PolyStyle>
+    </Style>
+    <StyleMap id="poly-9C27B0-1200-77">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#poly-9C27B0-1200-77-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#poly-9C27B0-1200-77-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="poly-AFB42B-1200-77-normal">
+      <LineStyle>
+        <color>ff2bb4af</color>
+        <width>1.2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>4d2bb4af</color>
+        <fill>1</fill>
+        <outline>1</outline>
+      </PolyStyle>
+    </Style>
+    <Style id="poly-AFB42B-1200-77-highlight">
+      <LineStyle>
+        <color>ff2bb4af</color>
+        <width>1.8</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>4d2bb4af</color>
+        <fill>1</fill>
+        <outline>1</outline>
+      </PolyStyle>
+    </Style>
+    <StyleMap id="poly-AFB42B-1200-77">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#poly-AFB42B-1200-77-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#poly-AFB42B-1200-77-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="poly-FF5252-1200-77-normal">
+      <LineStyle>
+        <color>ff5252ff</color>
+        <width>1.2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>4d5252ff</color>
+        <fill>1</fill>
+        <outline>1</outline>
+      </PolyStyle>
+    </Style>
+    <Style id="poly-FF5252-1200-77-highlight">
+      <LineStyle>
+        <color>ff5252ff</color>
+        <width>1.8</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>4d5252ff</color>
+        <fill>1</fill>
+        <outline>1</outline>
+      </PolyStyle>
+    </Style>
+    <StyleMap id="poly-FF5252-1200-77">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#poly-FF5252-1200-77-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#poly-FF5252-1200-77-highlight</styleUrl>
       </Pair>
     </StyleMap>
     <Style id="poly-FF5252-1200-77-nodesc-normal">
@@ -111,113 +239,294 @@
         <styleUrl>#poly-FF5252-1200-77-nodesc-highlight</styleUrl>
       </Pair>
     </StyleMap>
+    <Style id="poly-FFEA00-1200-77-normal">
+      <LineStyle>
+        <color>ff00eaff</color>
+        <width>1.2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>4d00eaff</color>
+        <fill>1</fill>
+        <outline>1</outline>
+      </PolyStyle>
+    </Style>
+    <Style id="poly-FFEA00-1200-77-highlight">
+      <LineStyle>
+        <color>ff00eaff</color>
+        <width>1.8</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>4d00eaff</color>
+        <fill>1</fill>
+        <outline>1</outline>
+      </PolyStyle>
+    </Style>
+    <StyleMap id="poly-FFEA00-1200-77">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#poly-FFEA00-1200-77-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#poly-FFEA00-1200-77-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
     <name>teszt réteg instvánmező</name>
+    <Placemark>
+      <name>Istvánmező</name>
+      <description>06305257026-220</description>
+      <styleUrl>#poly-0097A7-2701-92</styleUrl>
+      <Polygon>
+        <outerBoundaryIs>
+          <LinearRing>
+            <tessellate>1</tessellate>
+            <coordinates>
+              19.1081429,47.5002425,0
+              19.1079283,47.5018951,0
+              19.1069841,47.5032867,0
+              19.1062117,47.5047362,0
+              19.1051388,47.5059828,0
+              19.1032505,47.5078381,0
+              19.1005468,47.5102152,0
+              19.0991306,47.5114616,0
+              19.0980148,47.5107369,0
+              19.0967274,47.5100702,0
+              19.0953541,47.5087948,0
+              19.0936375,47.5073743,0
+              19.0914059,47.5060118,0
+              19.0892601,47.5040405,0
+              19.0898609,47.5030258,0
+              19.0917063,47.5019241,0
+              19.0949678,47.5012862,0
+              19.1006756,47.5006484,0
+              19.1081429,47.5002425,0
+            </coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
+    </Placemark>
+    <Placemark>
+      <name>városliget</name>
+      <description>06309556354-500</description>
+      <styleUrl>#poly-FF5252-1200-77-nodesc</styleUrl>
+      <Polygon>
+        <outerBoundaryIs>
+          <LinearRing>
+            <tessellate>1</tessellate>
+            <coordinates>
+              19.0890777,47.5040042,0
+              19.0894318,47.5043014,0
+              19.0903115,47.5050986,0
+              19.0911055,47.5059393,0
+              19.0917492,47.5063017,0
+              19.0933585,47.5073743,0
+              19.0943241,47.5081135,0
+              19.0950966,47.5087223,0
+              19.0958905,47.5095774,0
+              19.0969849,47.5102297,0
+              19.0989161,47.5114906,0
+              19.0976501,47.5124906,0
+              19.0969634,47.5130414,0
+              19.0964055,47.5133892,0
+              19.0951395,47.5140559,0
+              19.0937662,47.5130414,0
+              19.092586,47.5121573,0
+              19.09132,47.5112442,0
+              19.0899682,47.5102152,0
+              19.0887237,47.5091861,0
+              19.0873504,47.5080121,0
+              19.0863633,47.5074178,0
+              19.08499,47.5082875,0
+              19.083252,47.5099978,0
+              19.0812349,47.5119399,0
+              19.0797973,47.5131718,0
+              19.0805912,47.513766,0
+              19.077673,47.5138385,0
+              19.07969,47.5122153,0
+              19.0827584,47.5095484,0
+              19.0859663,47.5066206,0
+              19.0890777,47.5040042,0
+            </coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
+    </Placemark>
+    <Placemark>
+      <name>Ikea</name>
+      <description>06205821235-450"</description>
+      <styleUrl>#poly-7CB342-1200-77-nodesc</styleUrl>
+      <Polygon>
+        <outerBoundaryIs>
+          <LinearRing>
+            <tessellate>1</tessellate>
+            <coordinates>
+              19.1243005,47.5045043,0
+              19.1247296,47.5028083,0
+              19.1251159,47.502098,0
+              19.1287637,47.5024894,0
+              19.134171,47.5030548,0
+              19.1394281,47.5035911,0
+              19.141767,47.5039535,0
+              19.1462088,47.5044463,0
+              19.1457152,47.5054755,0
+              19.1423893,47.5050551,0
+              19.1403294,47.5048667,0
+              19.1397929,47.5062727,0
+              19.1361666,47.5059103,0
+              19.133935,47.5056204,0
+              19.1314888,47.5053305,0
+              19.1288924,47.5050841,0
+              19.1256309,47.5046783,0
+              19.1243005,47.5045043,0
+            </coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
+    </Placemark>
       <Placemark>
-        <name>Istvánmező</name>
-        <description>06305257026-220</description>
-        <styleUrl>#poly-0097A7-2701-92</styleUrl>
+        <name>Keleti</name>
+        <description>06705814569-200</description>
+        <styleUrl>#poly-AFB42B-1200-77</styleUrl>
         <Polygon>
           <outerBoundaryIs>
             <LinearRing>
               <tessellate>1</tessellate>
               <coordinates>
-                19.1081429,47.5002425,0
-                19.1079283,47.5018951,0
-                19.1069841,47.5032867,0
-                19.1062117,47.5047362,0
-                19.1051388,47.5059828,0
-                19.1032505,47.5078381,0
-                19.1005468,47.5102152,0
-                19.0991306,47.5114616,0
-                19.0980148,47.5107369,0
-                19.0967274,47.5100702,0
-                19.0953541,47.5087948,0
-                19.0936375,47.5073743,0
-                19.0914059,47.5060118,0
                 19.0892601,47.5040405,0
-                19.0898609,47.5030258,0
-                19.0917063,47.5019241,0
-                19.0949678,47.5012862,0
-                19.1006756,47.5006484,0
-                19.1081429,47.5002425,0
+                19.0855694,47.502301,0
+                19.081707,47.5005034,0
+                19.0793037,47.4995757,0
+                19.0805912,47.4993437,0
+                19.0844536,47.4994597,0
+                19.0889168,47.4994017,0
+                19.0935516,47.4994017,0
+                19.1007614,47.4994597,0
+                19.1074562,47.4999236,0
+                19.1081536,47.4999961,0
+                19.1080785,47.5002135,0
+                19.1069949,47.5002063,0
+                19.1034651,47.5004455,0
+                19.1008472,47.5005977,0
+                19.0996778,47.5007136,0
+                19.0940237,47.501366,0
+                19.0904295,47.5021778,0
+                19.0893245,47.5037216,0
+                19.0892601,47.5040405,0
               </coordinates>
             </LinearRing>
           </outerBoundaryIs>
         </Polygon>
       </Placemark>
       <Placemark>
-        <name>városliget</name>
-        <description>06309556354-500</description>
-        <styleUrl>#poly-FF5252-1200-77-nodesc</styleUrl>
+        <name>BME Q</name>
+        <description>0615896321-400</description>
+        <styleUrl>#poly-01579B-1200-77</styleUrl>
         <Polygon>
           <outerBoundaryIs>
             <LinearRing>
               <tessellate>1</tessellate>
               <coordinates>
-                19.0890777,47.5040042,0
-                19.0894318,47.5043014,0
-                19.0903115,47.5050986,0
-                19.0911055,47.5059393,0
-                19.0917492,47.5063017,0
-                19.0933585,47.5073743,0
-                19.0943241,47.5081135,0
-                19.0950966,47.5087223,0
-                19.0958905,47.5095774,0
-                19.0969849,47.5102297,0
-                19.0989161,47.5114906,0
-                19.0976501,47.5124906,0
-                19.0969634,47.5130414,0
-                19.0964055,47.5133892,0
-                19.0951395,47.5140559,0
-                19.0937662,47.5130414,0
-                19.092586,47.5121573,0
-                19.09132,47.5112442,0
-                19.0899682,47.5102152,0
-                19.0887237,47.5091861,0
-                19.0873504,47.5080121,0
-                19.0863633,47.5074178,0
-                19.08499,47.5082875,0
-                19.083252,47.5099978,0
-                19.0812349,47.5119399,0
-                19.0797973,47.5131718,0
-                19.0805912,47.513766,0
-                19.077673,47.5138385,0
-                19.07969,47.5122153,0
-                19.0827584,47.5095484,0
-                19.0859663,47.5066206,0
-                19.0890777,47.5040042,0
+                19.0590048,47.473874,0
+                19.0589833,47.4735694,0
+                19.0590262,47.473156,0
+                19.0590906,47.4728007,0
+                19.0592837,47.4724235,0
+                19.0597773,47.4719304,0
+                19.0603566,47.4723655,0
+                19.0609574,47.4727644,0
+                19.0607214,47.4731052,0
+                19.0610325,47.4732575,0
+                19.0617836,47.4726774,0
+                19.0616924,47.4731052,0
+                19.0614671,47.4738014,0
+                19.0608609,47.4736927,0
+                19.0604478,47.4736963,0
+                19.0600562,47.4737724,0
+                19.0594876,47.4738594,0
+                19.0590048,47.473874,0
               </coordinates>
             </LinearRing>
           </outerBoundaryIs>
         </Polygon>
       </Placemark>
       <Placemark>
-        <name>Ikea</name>
-		<description>06205821235-450"</description>
-        <styleUrl>#poly-7CB342-1200-77-nodesc</styleUrl>
+        <name>elte dél</name>
+        <description>06205874569-330</description>
+        <styleUrl>#poly-FF5252-1200-77</styleUrl>
         <Polygon>
           <outerBoundaryIs>
             <LinearRing>
               <tessellate>1</tessellate>
               <coordinates>
-                19.1243005,47.5045043,0
-                19.1247296,47.5028083,0
-                19.1251159,47.502098,0
-                19.1287637,47.5024894,0
-                19.134171,47.5030548,0
-                19.1394281,47.5035911,0
-                19.141767,47.5039535,0
-                19.1462088,47.5044463,0
-                19.1457152,47.5054755,0
-                19.1423893,47.5050551,0
-                19.1403294,47.5048667,0
-                19.1397929,47.5062727,0
-                19.1361666,47.5059103,0
-                19.133935,47.5056204,0
-                19.1314888,47.5053305,0
-                19.1288924,47.5050841,0
-                19.1256309,47.5046783,0
-                19.1243005,47.5045043,0
+                19.0624487,47.4728659,0
+                19.0618694,47.4728007,0
+                19.0617728,47.4725178,0
+                19.0615797,47.4719377,0
+                19.0612364,47.4714445,0
+                19.0615582,47.471314,0
+                19.0632963,47.4714155,0
+                19.0645194,47.4715315,0
+                19.0644765,47.4717418,0
+                19.0643477,47.4723438,0
+                19.0641117,47.4730835,0
+                19.063189,47.472953,0
+                19.0624487,47.4728659,0
+              </coordinates>
+            </LinearRing>
+          </outerBoundaryIs>
+        </Polygon>
+      </Placemark>
+      <Placemark>
+        <name>elte észak</name>
+        <description>06305698741-569</description>
+        <styleUrl>#poly-9C27B0-1200-77</styleUrl>
+        <Polygon>
+          <outerBoundaryIs>
+            <LinearRing>
+              <tessellate>1</tessellate>
+              <coordinates>
+                19.0605497,47.4752881,0
+                19.0606034,47.4751503,0
+                19.0607643,47.4745991,0
+                19.0609682,47.473874,0
+                19.0611935,47.4737869,0
+                19.0619767,47.4738885,0
+                19.0631032,47.4740045,0
+                19.0638864,47.4741278,0
+                19.063468,47.475143,0
+                19.0630281,47.4758102,0
+                19.0620518,47.4755854,0
+                19.0610325,47.4754331,0
+                19.0605497,47.4752881,0
+              </coordinates>
+            </LinearRing>
+          </outerBoundaryIs>
+        </Polygon>
+      </Placemark>
+      <Placemark>
+        <name>BME K</name>
+        <description>06704358716-350</description>
+        <styleUrl>#poly-FFEA00-1200-77</styleUrl>
+        <Polygon>
+          <outerBoundaryIs>
+            <LinearRing>
+              <tessellate>1</tessellate>
+              <coordinates>
+                19.0556896,47.4828293,0
+                19.0547025,47.4824087,0
+                19.0540051,47.482068,0
+                19.0535653,47.4818939,0
+                19.0537477,47.4811109,0
+                19.0536618,47.4802987,0
+                19.0537262,47.4794431,0
+                19.0544236,47.4793343,0
+                19.0560544,47.4791313,0
+                19.0571487,47.4796969,0
+                19.058007,47.480161,0
+                19.0583611,47.4804438,0
+                19.0577066,47.4810456,0
+                19.0567517,47.4818577,0
+                19.0556896,47.4828293,0
               </coordinates>
             </LinearRing>
           </outerBoundaryIs>

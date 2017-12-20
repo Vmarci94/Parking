@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +54,13 @@ public class SignupFragment extends Fragment implements ConnectionHandlerToMyFra
             }
         });
 
+        tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
+
     }
 
     @Override
@@ -70,8 +76,5 @@ public class SignupFragment extends Fragment implements ConnectionHandlerToMyFra
 
     @Override
     public void updateUI(FirebaseUser firebaseUser) {
-        if(firebaseUser != null){
-            Log.i(TAG, "SIKERES REGISZTRÁCIÓ");
-        }
     }
 }
